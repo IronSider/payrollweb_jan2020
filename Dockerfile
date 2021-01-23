@@ -15,4 +15,18 @@ WORKDIR /canyon
 COPY . /canyon
 
 RUN apt-get update && \
-	apt-get dist-upgrade -y -o Dpkg::Options::="--force
+	apt-get dist-upgrade -y -o Dpkg::Options::="--force-confold" && \
+	apt-get install -y cmake pkg-config libssl-dev git clang
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+	export PATH="$PATH:$HOME/.cargo/bin" && \
+	rustup toolchain install nightly && \
+	rustup target add wasm32-unknown-unknown --toolchain nightly && \
+	rustup default stable && \
+	cargo build "--$PROFILE"
+
+# ===== SECOND STAGE ======
+
+FROM phusion/baseimage:0.11
+LABEL maintainer="xuliuchengxlc@gmail.com"
+LABEL description="This is the 2nd stage: a very small image where we cop
