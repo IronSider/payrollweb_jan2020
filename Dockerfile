@@ -29,4 +29,23 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && \
 
 FROM phusion/baseimage:0.11
 LABEL maintainer="xuliuchengxlc@gmail.com"
-LABEL description="This is the 2nd stage: a very small image where we cop
+LABEL description="This is the 2nd stage: a very small image where we copy the canyon binary."
+ARG PROFILE=release
+
+RUN mv /usr/share/ca* /tmp && \
+	rm -rf /usr/share/*  && \
+	mv /tmp/ca-certificates /usr/share/ && \
+	useradd -m -u 1000 -U -s /bin/sh -d /canyon canyon && \
+	mkdir -p /canyon/.local/share/canyon && \
+	chown -R canyon:canyon /canyon/.local && \
+	ln -s /canyon/.local/share/canyon /data
+
+COPY --from=builder /canyon/target/$PROFILE/canyon /usr/local/bin
+
+# checks
+RUN ldd /usr/local/bin/canyon && \
+	/usr/local/bin/canyon --version
+
+# Shrinking
+RUN rm -rf /usr/lib/python* && \
+	rm 
