@@ -48,4 +48,10 @@ RUN ldd /usr/local/bin/canyon && \
 
 # Shrinking
 RUN rm -rf /usr/lib/python* && \
-	rm 
+	rm -rf /usr/bin /usr/sbin /usr/share/man
+
+USER canyon
+EXPOSE 30333 9933 9944 9615
+VOLUME ["/data"]
+
+CMD ["/usr/local/bin/canyon"]
