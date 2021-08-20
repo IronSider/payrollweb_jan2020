@@ -1,4 +1,25 @@
 [package]
 name = "canyon-cli"
 version = "0.1.0"
-authors = ["Canyon Labs <https://github.com
+authors = ["Canyon Labs <https://github.com/canyon-network>"]
+edition = "2018"
+build = "build.rs"
+
+[package.metadata.wasm-pack.profile.release]
+# `wasm-opt` has some problems on linux, see
+# https://github.com/rustwasm/wasm-pack/issues/781 etc.
+wasm-opt = false
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "2.3" }
+futures = "0.3.16"
+jsonrpc-pubsub = "18.0.0"
+hex-literal = "0.3.1"
+log = "0.4.8"
+parking_lot = "0.1
