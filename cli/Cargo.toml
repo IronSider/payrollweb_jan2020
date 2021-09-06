@@ -56,4 +56,11 @@ sc-network = { git = "https://github.com/paritytech/substrate", branch = "master
 sc-offchain = { git = "https://github.com/paritytech/substrate", branch = "master" }
 sc-rpc = { git = "https://github.com/paritytech/substrate", branch = "master" }
 sc-service = { git = "https://github.com/paritytech/substrate", default-features = false  , branch = "master" }
-sc-sync-state-rpc
+sc-sync-state-rpc = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-telemetry = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "master" }
+grandpa = { package = "sc-finality-grandpa", git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-tracing = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+# frame dependencies
+pallet-authority-discovery = { git = "https://github.com/paritytech/s
