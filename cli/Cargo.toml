@@ -69,4 +69,10 @@ pallet-contracts = { git = "https://github.com/paritytech/substrate", branch = "
 pallet-grandpa = { git = "https://github.com/paritytech/substrate", branch = "master" }
 pallet-im-online = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
 pallet-indices = { git = "https://github.com/paritytech/substrate", branch = "master" }
-pallet-staking = { git
+pallet-staking = { git = "https://github.com/paritytech/substrate", branch = "master" }
+pallet-timestamp = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
+pallet-transaction-payment = { git = "https://github.com/paritytech/substrate", branch = "master" }
+frame-support = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
+frame-system = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+# canyon-specific dependencies
