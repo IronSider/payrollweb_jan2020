@@ -63,4 +63,10 @@ grandpa = { package = "sc-finality-grandpa", git = "https://github.com/paritytec
 sc-tracing = { git = "https://github.com/paritytech/substrate", branch = "master" }
 
 # frame dependencies
-pallet-authority-discovery = { git = "https://github.com/paritytech/s
+pallet-authority-discovery = { git = "https://github.com/paritytech/substrate", branch = "master" }
+pallet-balances = { git = "https://github.com/paritytech/substrate", branch = "master" }
+pallet-contracts = { git = "https://github.com/paritytech/substrate", branch = "master" }
+pallet-grandpa = { git = "https://github.com/paritytech/substrate", branch = "master" }
+pallet-im-online = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
+pallet-indices = { git = "https://github.com/paritytech/substrate", branch = "master" }
+pallet-staking = { git
