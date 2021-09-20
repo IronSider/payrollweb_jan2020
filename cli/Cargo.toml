@@ -76,3 +76,16 @@ frame-support = { git = "https://github.com/paritytech/substrate", default-featu
 frame-system = { git = "https://github.com/paritytech/substrate", branch = "master" }
 
 # canyon-specific dependencies
+canyon-executor = { path = "../executor" }
+canyon-inspect = { path = "../inspect", optional = true }
+canyon-primitives = { path = "../primitives" }
+canyon-rpc = { path = "../rpc" }
+canyon-runtime = { path = "../runtime" }
+
+cc-datastore = { path = "../client/datastore" }
+cc-consensus-poa = { path = "../client/consensus/poa" }
+pallet-permastore = { path = "../pallets/permastore" }
+pallet-poa = { path = "../pallets/poa" }
+
+# CLI-specific dependencies
+sc-cli = { git = "https://github.com/paritytech/substrate", optional = true , br
