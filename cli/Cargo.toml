@@ -88,4 +88,10 @@ pallet-permastore = { path = "../pallets/permastore" }
 pallet-poa = { path = "../pallets/poa" }
 
 # CLI-specific dependencies
-sc-cli = { git = "https://github.com/paritytech/substrate", optional = true , br
+sc-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
+frame-benchmarking-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
+try-runtime-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
+
+[target.'cfg(target_arch="x86_64")'.dependencies]
+sc-cli = { git = "https://github.com/paritytech/substrate", branch = "master", optional = true, features = ["wasmtime"] }
+sc-service = { git = "https://github.com/paritytech/substrate", branch = "master", default-features = false, features
