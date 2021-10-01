@@ -110,4 +110,13 @@ serde_json = "1.0"
 soketto = "0.4.2"
 tempfile = "3.1.0"
 
-sc-consensus = { git = "https://github.com/parit
+sc-consensus = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-consensus-babe = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-consensus-epochs = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-keystore = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-service-test = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+[build-dependencies]
+structopt = { version = "0.3.8", optional = true }
+
+sc-cli = { git = "https://github.com/paritytech/substrate", opti
