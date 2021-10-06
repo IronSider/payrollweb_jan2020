@@ -119,4 +119,11 @@ sc-service-test = { git = "https://github.com/paritytech/substrate", branch = "m
 [build-dependencies]
 structopt = { version = "0.3.8", optional = true }
 
-sc-cli = { git = "https://github.com/paritytech/substrate", opti
+sc-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
+
+frame-benchmarking-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
+substrate-build-script-utils = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
+substrate-frame-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
+try-runtime-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
+
+canyon-inspect = { path = "../insp
