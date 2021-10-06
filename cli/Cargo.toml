@@ -126,4 +126,26 @@ substrate-build-script-utils = { git = "https://github.com/paritytech/substrate"
 substrate-frame-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
 try-runtime-cli = { git = "https://github.com/paritytech/substrate", optional = true , branch = "master" }
 
-canyon-inspect = { path = "../insp
+canyon-inspect = { path = "../inspect", optional = true }
+
+[features]
+default = ["cli"]
+cli = [
+	"canyon-executor/wasmi-errno",
+	"canyon-inspect",
+	"sc-cli",
+	"frame-benchmarking-cli",
+	"substrate-frame-cli",
+	"sc-service/db",
+	"structopt",
+	"substrate-build-script-utils",
+	"try-runtime-cli",
+]
+runtime-benchmarks = [
+	"canyon-runtime/runtime-benchmarks",
+	"frame-benchmarking-cli",
+]
+# Enable features that allow the runtime to be tried and debugged. Name might be subject to change
+# in the near future.
+try-runtime = [
+	
