@@ -148,4 +148,6 @@ runtime-benchmarks = [
 # Enable features that allow the runtime to be tried and debugged. Name might be subject to change
 # in the near future.
 try-runtime = [
-	
+	"canyon-runtime/try-runtime",
+	"try-runtime-cli",
+]
