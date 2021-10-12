@@ -374,3 +374,29 @@ pub fn development_config() -> ChainSpec {
         Default::default(),
     )
 }
+
+fn local_testnet_genesis() -> GenesisConfig {
+    testnet_genesis(
+        vec![
+            authority_keys_from_seed("Alice"),
+            authority_keys_from_seed("Bob"),
+        ],
+        get_account_id_from_seed::<sr25519::Public>("Alice"),
+        None,
+    )
+}
+
+/// Local testnet config (multivalidator Alice + Bob)
+pub fn local_testnet_config() -> ChainSpec {
+    ChainSpec::from_genesis(
+        "Local Testnet",
+        "local_testnet",
+        ChainType::Local,
+        local_testnet_genesis,
+        vec![],
+        None,
+        None,
+        None,
+        Default::default(),
+    )
+}
