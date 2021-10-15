@@ -43,3 +43,14 @@ pub enum Subcommand {
         about = "Decode given block or extrinsic using current native runtime."
     )]
     Inspect(canyon_inspect::cli::InspectCmd),
+
+    /// The custom benchmark subcommmand benchmarking runtime pallets.
+    #[structopt(name = "benchmark", about = "Benchmark runtime pallets.")]
+    Benchmark(frame_benchmarking_cli::BenchmarkCmd),
+
+    /// Try some experimental command on the runtime. This includes migration and runtime-upgrade
+    /// testing.
+    #[cfg(feature = "try-runtime")]
+    TryRuntime(try_runtime_cli::TryRuntimeCmd),
+
+    /// Verify a signature for a message, provided on STDIN, with a given (public or secret) key
