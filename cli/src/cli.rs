@@ -26,4 +26,20 @@ pub struct Cli {
     /// Possible subcommand with parameters.
     #[structopt(subcommand)]
     pub subcommand: Option<Subcommand>,
-  
+    #[allow(missing_docs)]
+    #[structopt(flatten)]
+    pub run: RunCmd,
+}
+
+/// Possible subcommands of the main binary.
+#[derive(Debug, StructOpt)]
+pub enum Subcommand {
+    /// Key management cli utilities
+    Key(KeySubcommand),
+
+    /// The custom inspect subcommmand for decoding blocks and extrinsics.
+    #[structopt(
+        name = "inspect",
+        about = "Decode given block or extrinsic using current native runtime."
+    )]
+    Inspect(canyon_inspect::cli::InspectCmd),
