@@ -53,4 +53,26 @@ pub enum Subcommand {
     #[cfg(feature = "try-runtime")]
     TryRuntime(try_runtime_cli::TryRuntimeCmd),
 
-    /// Verify a signature for a message, provided on STDIN, with a given (public or secret) key
+    /// Verify a signature for a message, provided on STDIN, with a given (public or secret) key.
+    Verify(VerifyCmd),
+
+    /// Generate a seed that provides a vanity address.
+    Vanity(VanityCmd),
+
+    /// Sign a message, with a given (secret) key.
+    Sign(SignCmd),
+
+    /// Build a chain specification.
+    BuildSpec(sc_cli::BuildSpecCmd),
+
+    /// Validate blocks.
+    CheckBlock(sc_cli::CheckBlockCmd),
+
+    /// Export blocks.
+    ExportBlocks(sc_cli::ExportBlocksCmd),
+
+    /// Export the state of a given block into a chain spec.
+    ExportState(sc_cli::ExportStateCmd),
+
+    /// Import blocks.
+    
