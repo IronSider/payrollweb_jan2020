@@ -75,4 +75,11 @@ pub enum Subcommand {
     ExportState(sc_cli::ExportStateCmd),
 
     /// Import blocks.
-    
+    ImportBlocks(sc_cli::ImportBlocksCmd),
+
+    /// Remove the whole chain.
+    PurgeChain(sc_cli::PurgeChainCmd),
+
+    /// Revert the chain to a previous state.
+    Revert(sc_cli::RevertCmd),
+}
