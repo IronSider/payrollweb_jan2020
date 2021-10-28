@@ -13,4 +13,28 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU Genera
+// You should have received a copy of the GNU General Public License
+// along with Canyon. If not, see <http://www.gnu.org/licenses/>.
+
+//! Substrate CLI library.
+//!
+//! This package has two Cargo features:
+//!
+//! - `cli` (default): exposes functions that parse command-line options, then start and run the
+//! node as a CLI application.
+
+#![warn(missing_docs)]
+
+pub mod chain_spec;
+
+#[macro_use]
+mod service;
+#[cfg(feature = "cli")]
+mod cli;
+#[cfg(feature = "cli")]
+mod command;
+
+#[cfg(feature = "cli")]
+pub use cli::*;
+#[cfg(feature = "cli")]
+pub use command::
