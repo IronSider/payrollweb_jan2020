@@ -547,3 +547,107 @@ pub fn new_light_base(
     ));
 
     let (grandpa_block_import, grandpa_link) = grandpa::block_import(
+        client.clone(),
+        &(client.clone() as Arc<_>),
+        select_chain.clone(),
+        telemetry.as_ref().map(|x| x.handle()),
+    )?;
+    let justification_import = grandpa_block_import.clone();
+
+    let (babe_block_import, babe_link) = sc_consensus_babe::block_import(
+        sc_consensus_babe::Config::get_or_compute(&*client)?,
+        grandpa_block_import,
+        client.clone(),
+    )?;
+
+    let slot_duration = babe_link.config().slot_duration();
+    let import_queue = sc_consensus_babe::import_queue(
+        babe_link,
+        babe_block_import,
+        Some(Box::new(justification_import)),
+        client.clone(),
+        select_chain,
+        move |_, ()| async move {
+            let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
+
+            let slot =
+                sp_consensus_babe::inherents::InherentDataProvider::from_timestamp_and_duration(
+                    *timestamp,
+                    slot_duration,
+                );
+
+            let uncles =
+                sp_authorship::InherentDataProvider::<<Block as BlockT>::Header>::check_inherents();
+
+            Ok((timestamp, slot, uncles))
+        },
+        &task_manager.spawn_essential_handle(),
+        config.prometheus_registry(),
+        sp_consensus::NeverCanAuthor,
+        telemetry.as_ref().map(|x| x.handle()),
+    )?;
+
+    let warp_sync = Arc::new(grandpa::warp_proof::NetworkProvider::new(
+        backend.clone(),
+        grandpa_link.shared_authority_set().clone(),
+    ));
+
+    let (network, system_rpc_tx, network_starter) =
+        sc_service::build_network(sc_service::BuildNetworkParams {
+            config: &config,
+            client: client.clone(),
+            transaction_pool: transaction_pool.clone(),
+            spawn_handle: task_manager.spawn_handle(),
+            import_queue,
+            on_demand: Some(on_demand.clone()),
+            block_announce_validator_builder: None,
+            warp_sync: Some(warp_sync),
+        })?;
+    network_starter.start_network();
+
+    if config.offchain_worker.enabled {
+        sc_service::build_offchain_workers(
+            &config,
+            task_manager.spawn_handle(),
+            client.clone(),
+            network.clone(),
+        );
+    }
+
+    let light_deps = canyon_rpc::LightDeps {
+        remote_blockchain: backend.remote_blockchain(),
+        fetcher: on_demand.clone(),
+        client: client.clone(),
+        pool: transaction_pool.clone(),
+    };
+
+    let rpc_extensions = canyon_rpc::create_light(light_deps);
+
+    let rpc_handlers = sc_service::spawn_tasks(sc_service::SpawnTasksParams {
+        on_demand: Some(on_demand),
+        remote_blockchain: Some(backend.remote_blockchain()),
+        rpc_extensions_builder: Box::new(sc_service::NoopRpcExtensionBuilder(rpc_extensions)),
+        client: client.clone(),
+        transaction_pool: transaction_pool.clone(),
+        keystore: keystore_container.sync_keystore(),
+        config,
+        backend,
+        system_rpc_tx,
+        network: network.clone(),
+        task_manager: &mut task_manager,
+        telemetry: telemetry.as_mut(),
+    })?;
+
+    Ok((
+        task_manager,
+        rpc_handlers,
+        client,
+        network,
+        transaction_pool,
+    ))
+}
+
+/// Builds a new service for a light client.
+pub fn new_light(config: Configuration) -> Result<TaskManager, ServiceError> {
+    new_light_base(config).map(|(task_manager, _, _, _, _)| task_manager)
+}

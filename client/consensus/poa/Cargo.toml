@@ -1,0 +1,45 @@
+
+[package]
+name = "cc-consensus-poa"
+version = "0.1.0"
+authors = ["Canyon Labs <https://github.com/canyon-network>"]
+edition = "2018"
+
+[dependencies]
+async-trait = "0.1.47"
+codec = { package = "parity-scale-codec", version = "2.3" }
+log = "0.4"
+thiserror = "1.0"
+
+sp-api = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-blockchain = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-block-builder = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-consensus = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-core = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-inherents = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-io = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-trie = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+sc-client-api = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-consensus = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+canyon-primitives = { path = "../../../primitives" }
+cc-datastore = { path = "../../datastore" }
+cp-consensus-poa = { path = "../../../primitives/consensus/poa" }
+cp-permastore = { path = "../../../primitives/permastore" }
+cp-poa = { path = "../../../primitives/poa" }
+
+[dev-dependencies]
+criterion = "0.3"
+rand = "0.8"
+
+sc-block-builder = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-keyring = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-state-machine = { git = "https://github.com/paritytech/substrate", branch = "master" }
+substrate-test-runtime = { git = "https://github.com/paritytech/substrate", branch = "master" }
+substrate-test-runtime-client = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+[[bench]]
+name = "benchmark"
+harness = false
