@@ -23,4 +23,14 @@ fn chunk_proof_benchmark(c: &mut Criterion) {
 
     let data = random_data(100 * 1024 * 1024);
     c.bench_function("chunk proof generation 100MiB", |b| {
-        b.iter(|| generate_chunk_proof(b
+        b.iter(|| generate_chunk_proof(black_box(data.clone()), black_box(20)))
+    });
+
+    let data = random_data(1024 * 1024 * 1024);
+    c.bench_function("chunk proof generation 1GiB", |b| {
+        b.iter(|| generate_chunk_proof(black_box(data.clone()), black_box(20)))
+    });
+}
+
+criterion_group!(benches, chunk_proof_benchmark);
+criterion_main!(benches);
