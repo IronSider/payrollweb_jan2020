@@ -63,3 +63,22 @@ impl PoaInherentDataProvider {
         Ok(Self { poa_outcome })
     }
 }
+
+#[async_trait::async_trait]
+impl sp_inherents::InherentDataProvider for PoaInherentDataProvider {
+    fn provide_inherent_data(
+        &self,
+        inherent_data: &mut sp_inherents::InherentData,
+    ) -> Result<(), sp_inherents::Error> {
+        inherent_data.put_data(POA_INHERENT_IDENTIFIER, &self.poa_outcome)
+    }
+
+    async fn try_handle_error(
+        &self,
+        _: &sp_inherents::InherentIdentifier,
+        _: &[u8],
+    ) -> Option<Result<(), sp_inherents::Error>> {
+        // Inherent isn't checked and can not return any error
+        None
+    }
+}
