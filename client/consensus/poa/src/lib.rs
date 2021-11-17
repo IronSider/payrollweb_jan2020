@@ -22,4 +22,17 @@
 //!
 //! Proof of Access is a kind of lightweight storage consensus initially
 //! adopted by [Arweave](https://arweave.org). In arweave, PoA serves as
-//! an enhancement of Proof of Work in which the entire recall block d
+//! an enhancement of Proof of Work in which the entire recall block data
+//! is included in the material to be hashed for input to the proof of work.
+//!
+//! Requiring [`ProofOfAccess`] incentivises storage as miners need
+//! access to random blocks from the blockweave's history in order
+//! to mine new blocks and receive mining rewards.
+//!
+//! ## Overview
+//!
+//! The general workflow of PoA is described briefly below:
+//!
+//! 1. Pick a random byte from the whole network storage space, aka BlockWeave.
+//!     - The block weave can be seen as an ever growing gigantic array.
+//!     - Currently, the randome byte is determined by has
