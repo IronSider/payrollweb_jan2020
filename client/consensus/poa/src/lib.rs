@@ -46,4 +46,15 @@
 //!
 //!     - If the data does exist locally, create the two merkle proofs
 //!       of extrinsic and data chunks respectively.
-//!     - If not, repeat from Step 1 by choosing another 
+//!     - If not, repeat from Step 1 by choosing another random byte
+//!       with N+1 hashing.
+//!
+//! ## Usage
+//!
+//! Technically, PoA needs to be used with other traditional consensus
+//! algorithems like PoW or PoS together as it's not typically designed
+//! for solving the problem of selecting one from a set of validators
+//! to create next block in an unpredictable or fair way. In another word,
+//! PoA is not intended for resolving the leader election problem, and
+//! is usually exploited as a precondition for PoW or PoS in order to
+//! encou
