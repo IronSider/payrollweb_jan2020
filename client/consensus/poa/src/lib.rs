@@ -57,4 +57,13 @@
 //! to create next block in an unpredictable or fair way. In another word,
 //! PoA is not intended for resolving the leader election problem, and
 //! is usually exploited as a precondition for PoW or PoS in order to
-//! encou
+//! encourage the miners to store more data locally.
+//!
+//! This crate implements the core algorithem of Proof of Access in
+//! [`construct_poa`] and provides the inherent data provider via
+//! [`PoaInherentDataProvider`]. [`PurePoaBlockImport`] implements the
+//! `BlockImport` trait, thus can be wrapped in another block importer.
+//!
+//! To use this engine, you can create an inhehrent extrinsic using the
+//! data provided by [`PoaInherentDataProvider`] in a pallet, refer to
+//! [`pallet_poa::Call::deposit`] as an 
