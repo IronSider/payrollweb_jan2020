@@ -91,4 +91,20 @@ use sp_blockchain::{well_known_cache_keys::Id as CacheKeyId, HeaderBackend, Prov
 use sp_consensus::{Error as ConsensusError, SelectChain};
 use sp_runtime::{
     generic::BlockId,
-    traits::{Block
+    traits::{Block as BlockT, Header as HeaderT, NumberFor},
+    DigestItem,
+};
+
+use canyon_primitives::{DataIndex, Depth, ExtrinsicIndex};
+use cc_datastore::TransactionDataBackend as TransactionDataBackendT;
+use cp_permastore::{PermastoreApi, CHUNK_SIZE};
+use cp_poa::PoaApi;
+
+mod chunk_proof;
+mod inherent;
+mod trie;
+mod tx_proof;
+
+pub use self::chunk_proof::{verify_chunk_proof, ChunkProofBuilder, ChunkProofVerifier};
+pub use self::inherent::PoaInherentDataProvider;
+pub use self::tx_proof::{build_extri
