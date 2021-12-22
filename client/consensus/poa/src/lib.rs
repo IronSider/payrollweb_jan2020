@@ -107,4 +107,22 @@ mod tx_proof;
 
 pub use self::chunk_proof::{verify_chunk_proof, ChunkProofBuilder, ChunkProofVerifier};
 pub use self::inherent::PoaInherentDataProvider;
-pub use self::tx_proof::{build_extri
+pub use self::tx_proof::{build_extrinsic_proof, verify_extrinsic_proof, TxProofVerifier};
+
+// Re-exports of the primitives of poa consensus.
+pub use cp_consensus_poa::{
+    ChunkProof, PoaConfiguration, PoaOutcome, PoaValidityError, ProofOfAccess, POA_ENGINE_ID,
+};
+
+/// Minimum depth of PoA.
+const MIN_DEPTH: u32 = 1;
+
+type Randomness = Vec<u8>;
+
+/// Error type for poa consensus.
+#[derive(Error, Debug)]
+pub enum Error<Block: BlockT> {
+    /// No PoA seal in the header.
+    #[error("Header {0:?} has no PoA digest")]
+    NoDigest(Block::Hash),
+    /// Multipl
