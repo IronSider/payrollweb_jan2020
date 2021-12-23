@@ -125,4 +125,18 @@ pub enum Error<Block: BlockT> {
     /// No PoA seal in the header.
     #[error("Header {0:?} has no PoA digest")]
     NoDigest(Block::Hash),
-    /// Multipl
+    /// Multiple PoA seals were found in the header.
+    #[error("Header {0:?} has multiple PoA digests")]
+    MultipleDigests(Block::Hash),
+    /// Client error.
+    #[error("Client error: {0}")]
+    Client(sp_blockchain::Error),
+    /// Codec error.
+    #[error("Codec error: {0}")]
+    Codec(#[from] codec::Error),
+    /// Blockchain error.
+    #[error("Blockchain error: {0}")]
+    BlockchainError(#[from] sp_blockchain::Error),
+    /// Invalid ProofOfAccess.
+    #[error("Invalid ProofOfAccess: {0:?}")]
+    InvalidPoa(PoaValidityEr
