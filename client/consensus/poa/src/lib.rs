@@ -139,4 +139,18 @@ pub enum Error<Block: BlockT> {
     BlockchainError(#[from] sp_blockchain::Error),
     /// Invalid ProofOfAccess.
     #[error("Invalid ProofOfAccess: {0:?}")]
-    InvalidPoa(PoaValidityEr
+    InvalidPoa(PoaValidityError),
+    /// Failed to verify the merkle proof.
+    #[error("VerifyError error: {0:?}")]
+    VerifyFailed(#[from] cp_permastore::VerifyError),
+    /// Runtime api error.
+    #[error(transparent)]
+    ApiError(#[from] sp_api::ApiError),
+    /// Chunk root not found.
+    #[error("Chunk root not found for the recall extrinsic {0}#{1}")]
+    ChunkRootNotFound(BlockId<Block>, ExtrinsicIndex),
+    /// Block not found.
+    #[error("Block {0} not found")]
+    BlockNotFound(BlockId<Block>),
+    /// Recall block not found.
+    #[
