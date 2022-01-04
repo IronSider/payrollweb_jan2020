@@ -153,4 +153,20 @@ pub enum Error<Block: BlockT> {
     #[error("Block {0} not found")]
     BlockNotFound(BlockId<Block>),
     /// Recall block not found.
-    #[
+    #[error("Recall block not found given the recall byte {0}")]
+    RecallBlockNotFound(DataIndex),
+    /// Recall extrinsic not found.
+    #[error("Recall extrinsic index not found given the recall byte {0}")]
+    RecallExtrinsicNotFound(DataIndex),
+    /// Maxinum depth reached.
+    #[error("Reaching the maximum allowed depth {0}")]
+    MaxDepthReached(Depth),
+}
+
+impl<B: BlockT> From<Error<B>> for ConsensusError {
+    fn from(error: Error<B>) -> Self {
+        Self::ClientImport(error.to_string())
+    }
+}
+
+/// Applies the hashing on `seed` for `n` times
