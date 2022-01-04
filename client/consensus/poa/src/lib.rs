@@ -170,3 +170,21 @@ impl<B: BlockT> From<Error<B>> for ConsensusError {
 }
 
 /// Applies the hashing on `seed` for `n` times
+fn multihash(seed: Randomness, n: Depth) -> [u8; 32] {
+    assert!(n > 0, "n can not be 0 when calculating multihash");
+    let mut r = sp_io::hashing::blake2_256(&seed);
+    for _ in 1..n {
+        r = sp_io::hashing::blake2_256(&r);
+    }
+    r
+}
+
+fn make_bytes(h: [u8; 32]) -> [u8; 8] {
+    let mut res = [0u8; 8];
+    res.copy_from_slice(&h[..8]);
+    res
+}
+
+/// Returns the position of recall byte in the entire weave.
+///
+/// Formula: `multihash(seed, depth) % weave
