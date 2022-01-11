@@ -187,4 +187,23 @@ fn make_bytes(h: [u8; 32]) -> [u8; 8] {
 
 /// Returns the position of recall byte in the entire weave.
 ///
-/// Formula: `multihash(seed, depth) % weave
+/// Formula: `multihash(seed, depth) % weave_size`
+///
+/// TODO: SPoRA
+pub fn calculate_challenge_byte(
+    seed: Randomness,
+    weave_size: DataIndex,
+    depth: Depth,
+) -> DataIndex {
+    assert!(
+        weave_size > 0,
+        "weave size can not be 0 when calculating the recall byte"
+    );
+    DataIndex::from_le_bytes(make_bytes(multihash(seed, depth))) % weave_size
+}
+
+/// Returns a tuple of (extrinsic_index, absolute_data_index)
+/// of extrinsic in which `recall_byte` is located.
+fn find_recall_tx(
+    recall_byte: DataIndex,
+    sized_
