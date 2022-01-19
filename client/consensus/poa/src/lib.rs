@@ -206,4 +206,18 @@ pub fn calculate_challenge_byte(
 /// of extrinsic in which `recall_byte` is located.
 fn find_recall_tx(
     recall_byte: DataIndex,
-    sized_
+    sized_extrinsics: &[(ExtrinsicIndex, DataIndex)],
+) -> (ExtrinsicIndex, DataIndex) {
+    log::trace!(
+        target: "poa",
+        "Locating the position of recall tx, recall_byte: {}, sized_extrinsics: {:?}",
+        recall_byte, sized_extrinsics
+    );
+    match sized_extrinsics.binary_search_by_key(&recall_byte, |&(_, weave_size)| weave_size) {
+        Ok(i) => sized_extrinsics[i],
+        Err(i) => sized_extrinsics[i],
+    }
+}
+
+/// All information of recall block that is required to build a [`ProofOfAccess`].
+#[derive(Debug, Clone)
