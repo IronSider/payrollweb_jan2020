@@ -220,4 +220,18 @@ fn find_recall_tx(
 }
 
 /// All information of recall block that is required to build a [`ProofOfAccess`].
-#[derive(Debug, Clone)
+#[derive(Debug, Clone)]
+pub struct RecallInfo<B: BlockT> {
+    /// Weave size of last block.
+    weave_base: DataIndex,
+    /// All extrinsics in recall block.
+    extrinsics: Vec<B::Extrinsic>,
+    /// Extrinsics root of recall block.
+    extrinsics_root: B::Hash,
+    /// Index of the extrinsic in which recall byte is located.
+    recall_extrinsic_index: ExtrinsicIndex,
+}
+
+impl<B: BlockT<Hash = canyon_primitives::Hash>> RecallInfo<B> {
+    /// Converts the recall info to a [`TxProofVerifier`].
+    pub fn as_tx_proof_verifi
