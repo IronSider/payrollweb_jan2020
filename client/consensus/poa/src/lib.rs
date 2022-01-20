@@ -234,4 +234,18 @@ pub struct RecallInfo<B: BlockT> {
 
 impl<B: BlockT<Hash = canyon_primitives::Hash>> RecallInfo<B> {
     /// Converts the recall info to a [`TxProofVerifier`].
-    pub fn as_tx_proof_verifi
+    pub fn as_tx_proof_verifier(&self) -> TxProofVerifier<B> {
+        let recall_extrinsic = self.extrinsics[self.recall_extrinsic_index as usize].clone();
+        TxProofVerifier::new(
+            recall_extrinsic,
+            self.extrinsics_root,
+            self.recall_extrinsic_index,
+        )
+    }
+}
+
+/// Returns all the information about the recall block for the PoA consensus.
+fn find_recall_info<Block, Client>(
+    recall_byte: DataIndex,
+    recall_block_number: NumberFor<Block>,
+    client: &Arc<Client>,
