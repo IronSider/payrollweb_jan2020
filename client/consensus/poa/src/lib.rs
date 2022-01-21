@@ -262,3 +262,21 @@ where
     let weave_base = client
         .runtime_api()
         .weave_size(&BlockId::Hash(*header.parent_hash()))?;
+
+    let mut sized_extrinsics = Vec::with_capacity(extrinsics.len());
+
+    let mut acc = 0u64;
+    for (index, _extrinsic) in extrinsics.iter().enumerate() {
+        let tx_size = client.runtime_api().data_size(
+            &recall_block_id,
+            recall_block_number,
+            index as ExtrinsicIndex,
+        )? as u64;
+        if tx_size > 0 {
+            sized_extrinsics.push((index as ExtrinsicIndex, weave_base + acc + tx_size));
+            acc += tx_size;
+        }
+    }
+
+    log::trace!(
+     
