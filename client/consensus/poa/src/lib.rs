@@ -249,3 +249,16 @@ fn find_recall_info<Block, Client>(
     recall_byte: DataIndex,
     recall_block_number: NumberFor<Block>,
     client: &Arc<Client>,
+) -> Result<RecallInfo<Block>, Error<Block>>
+where
+    Block: BlockT,
+    Client: BlockBackend<Block> + ProvideRuntimeApi<Block> + Send + Sync,
+    Client::Api: PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash>,
+{
+    let recall_block_id = BlockId::number(recall_block_number);
+
+    let (header, extrinsics) = fetch_block(client, recall_block_id)?.deconstruct();
+
+    let weave_base = client
+        .runtime_api()
+        .weave_size(&BlockId::Hash(*header.parent_hash()))?;
