@@ -279,4 +279,21 @@ where
     }
 
     log::trace!(
-     
+        target: "poa",
+        "The sized extrinsics found in recall block: {:?}",
+        sized_extrinsics,
+    );
+
+    // No data store transactions in this block.
+    if sized_extrinsics.is_empty() {
+        return Err(Error::<Block>::RecallExtrinsicNotFound(recall_byte));
+    }
+
+    let (recall_extrinsic_index, _recall_block_data_ceil) =
+        find_recall_tx(recall_byte, &sized_extrinsics);
+
+    Ok(RecallInfo {
+        weave_base,
+        extrinsics,
+        extrinsics_root: *header.extrinsics_root(),
+        recall_extri
