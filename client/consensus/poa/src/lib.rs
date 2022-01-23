@@ -296,4 +296,25 @@ where
         weave_base,
         extrinsics,
         extrinsics_root: *header.extrinsics_root(),
-        recall_extri
+        recall_extrinsic_index,
+    })
+}
+
+/// Returns the header and body of block `id`.
+fn fetch_block<Block, Client>(
+    client: &Arc<Client>,
+    id: BlockId<Block>,
+) -> Result<Block, Error<Block>>
+where
+    Block: BlockT,
+    Client: BlockBackend<Block>,
+{
+    Ok(client.block(&id)?.ok_or(Error::BlockNotFound(id))?.block)
+}
+
+/// Returns the block number of recall block.
+fn find_recall_block<Block: BlockT, RA>(
+    at: BlockId<Block>,
+    recall_byte: DataIndex,
+    runtime_api: &Arc<RA>,
+) -> R
