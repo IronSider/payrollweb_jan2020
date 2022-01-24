@@ -317,4 +317,22 @@ fn find_recall_block<Block: BlockT, RA>(
     at: BlockId<Block>,
     recall_byte: DataIndex,
     runtime_api: &Arc<RA>,
-) -> R
+) -> Result<NumberFor<Block>, Error<Block>>
+where
+    RA: ProvideRuntimeApi<Block> + Send + Sync,
+    RA::Api: PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash>,
+{
+    runtime_api
+        .runtime_api()
+        .find_recall_block(&at, recall_byte)?
+        .ok_or(Error::RecallBlockNotFound(recall_byte))
+}
+
+/// A builder for creating [`PoaOutcome`].
+pub struct PoaBuilder<Block, Client, TransactionDataBackend> {
+    client: Arc<Client>,
+    transaction_data_backend: TransactionDataBackend,
+    phatom: PhantomData<Block>,
+}
+
+impl<Bloc
