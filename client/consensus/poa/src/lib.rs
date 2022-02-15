@@ -347,4 +347,21 @@ where
     Client::Api: PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash> + PoaApi<Block>,
     TransactionDataBackend: TransactionDataBackendT<Block>,
 {
-    /// Creates a new instance of
+    /// Creates a new instance of [`PoaBuilder`].
+    pub fn new(client: Arc<Client>, transaction_data_backend: TransactionDataBackend) -> Self {
+        Self {
+            client,
+            transaction_data_backend,
+            phatom: PhantomData::<Block>,
+        }
+    }
+
+    /// Returns the number of recall block.
+    fn find_recall_block(
+        &self,
+        at: BlockId<Block>,
+        recall_byte: DataIndex,
+    ) -> Result<NumberFor<Block>, Error<Block>> {
+        self.client
+            .runtime_api()
+            .find_recall_block(&at, recall_b
