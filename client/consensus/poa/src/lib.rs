@@ -376,4 +376,18 @@ where
         let weave_size = self.client.runtime_api().weave_size(&parent_id)?;
 
         if weave_size == 0 {
-            log::debug!(target: "poa", "Skipping the
+            log::debug!(target: "poa", "Skipping the poa construction as the weave size is 0");
+            return Ok(PoaOutcome::Skipped);
+        }
+
+        let PoaConfiguration {
+            max_depth,
+            max_tx_path,
+            max_chunk_path,
+        } = self.client.runtime_api().poa_config(&parent_id)?;
+
+        for depth in MIN_DEPTH..=max_depth {
+            let recall_byte = calculate_challenge_byte(parent.encode(), weave_size, depth);
+            log::debug!(
+                target: "poa",
+                "Attempting to generate poa at depth: {}, recal
