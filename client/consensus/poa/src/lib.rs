@@ -364,4 +364,16 @@ where
     ) -> Result<NumberFor<Block>, Error<Block>> {
         self.client
             .runtime_api()
-            .find_recall_block(&at, recall_b
+            .find_recall_block(&at, recall_byte)?
+            .ok_or(Error::RecallBlockNotFound(recall_byte))
+    }
+
+    /// Creates the inherent data [`PoaOutcome`].
+    pub fn build(&self, parent: Block::Hash) -> Result<PoaOutcome, Error<Block>> {
+        log::debug!(target: "poa", "Start building poa on top of {:?}", parent);
+        let parent_id = BlockId::Hash(parent);
+
+        let weave_size = self.client.runtime_api().weave_size(&parent_id)?;
+
+        if weave_size == 0 {
+            log::debug!(target: "poa", "Skipping the
