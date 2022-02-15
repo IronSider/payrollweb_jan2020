@@ -335,4 +335,16 @@ pub struct PoaBuilder<Block, Client, TransactionDataBackend> {
     phatom: PhantomData<Block>,
 }
 
-impl<Bloc
+impl<Block, Client, TransactionDataBackend> PoaBuilder<Block, Client, TransactionDataBackend>
+where
+    Block: BlockT<Hash = canyon_primitives::Hash> + 'static,
+    Client: BlockBackend<Block>
+        + HeaderBackend<Block>
+        + ProvideRuntimeApi<Block>
+        + Send
+        + Sync
+        + 'static,
+    Client::Api: PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash> + PoaApi<Block>,
+    TransactionDataBackend: TransactionDataBackendT<Block>,
+{
+    /// Creates a new instance of
