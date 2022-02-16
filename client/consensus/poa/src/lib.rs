@@ -390,4 +390,20 @@ where
             let recall_byte = calculate_challenge_byte(parent.encode(), weave_size, depth);
             log::debug!(
                 target: "poa",
-                "Attempting to generate poa at depth: {}, recal
+                "Attempting to generate poa at depth: {}, recall byte found: {}",
+                depth, recall_byte,
+            );
+            let recall_block_number = self.find_recall_block(parent_id, recall_byte)?;
+
+            log::debug!(
+                target: "poa", "Recall block number: {} was found given the recall byte: {}",
+                recall_block_number,
+                recall_byte,
+            );
+
+            let RecallInfo {
+                weave_base,
+                extrinsics,
+                extrinsics_root,
+                recall_extrinsic_index,
+            } = find_
