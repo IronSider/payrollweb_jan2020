@@ -418,4 +418,18 @@ where
 
             let recall_data = self.transaction_data_backend.transaction_data(
                 BlockId::Number(recall_block_number),
-                recall_extrinsic_index as 
+                recall_extrinsic_index as u32,
+            );
+
+            match recall_data {
+                Ok(Some(tx_data)) => {
+                    let transaction_data_offset = match recall_byte.checked_sub(weave_base) {
+                        Some(offset) => offset,
+                        None => panic!(
+                            "Underflow happened! recall_byte: {}, recall_block_weave_base: {}",
+                            recall_byte, weave_base
+                        ),
+                    };
+
+                    if let Ok(chunk_proof) =
+                        ChunkProof
