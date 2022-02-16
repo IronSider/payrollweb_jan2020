@@ -406,4 +406,16 @@ where
                 extrinsics,
                 extrinsics_root,
                 recall_extrinsic_index,
-            } = find_
+            } = find_recall_info(recall_byte, recall_block_number, &self.client)?;
+
+            // Continue if the recall tx has been forgotten as the forgot
+            // txs can not participate in the consensus.
+            //
+            // FIXME: handle the data oblivion
+            // if todo!("recall_tx has been forgotten via runtime api") {
+            // continue;
+            // }
+
+            let recall_data = self.transaction_data_backend.transaction_data(
+                BlockId::Number(recall_block_number),
+                recall_extrinsic_index as 
