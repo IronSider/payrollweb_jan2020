@@ -432,4 +432,14 @@ where
                     };
 
                     if let Ok(chunk_proof) =
-                        ChunkProof
+                        ChunkProofBuilder::new(tx_data, CHUNK_SIZE, transaction_data_offset as u32)
+                            .build()
+                    {
+                        if chunk_proof.size() > max_chunk_path as usize {
+                            log::debug!(
+                                target: "poa",
+                                "Dropping the chunk proof as it's too large ({} > {})",
+                                chunk_proof.size(),
+                                max_chunk_path,
+                            );
+                            conti
