@@ -452,4 +452,13 @@ where
                         ) {
                             let tx_path_size: usize = tx_proof.iter().map(|t| t.len()).sum();
                             if tx_path_size > max_tx_path as usize {
-                                log::
+                                log::debug!(
+                                    target: "poa",
+                                    "Dropping the tx proof as it's too large ({} > {})",
+                                    tx_path_size,
+                                    max_tx_path,
+                                );
+                                continue;
+                            }
+                            let poa = ProofOfAccess::new(depth, tx_proof, chunk_proof);
+                            log::trace!(target: "poa", "Generate the poa proof succes
