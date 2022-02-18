@@ -461,4 +461,16 @@ where
                                 continue;
                             }
                             let poa = ProofOfAccess::new(depth, tx_proof, chunk_proof);
-                            log::trace!(target: "poa", "Generate the poa proof succes
+                            log::trace!(target: "poa", "Generate the poa proof successfully: {:?}", poa);
+                            return Ok(PoaOutcome::Justification(poa));
+                        }
+                    }
+                }
+                Ok(None) => {
+                    log::warn!(
+                        target: "poa",
+                        "Transaction data not found given block {} and extrinsic index {}, continuing next depth: {}",
+                        recall_block_number,
+                        recall_extrinsic_index,
+                        depth + 1
+                    
