@@ -442,4 +442,14 @@ where
                                 chunk_proof.size(),
                                 max_chunk_path,
                             );
-                            conti
+                            continue;
+                        }
+
+                        if let Ok(tx_proof) = build_extrinsic_proof::<Block>(
+                            recall_extrinsic_index,
+                            extrinsics_root,
+                            extrinsics,
+                        ) {
+                            let tx_path_size: usize = tx_proof.iter().map(|t| t.len()).sum();
+                            if tx_path_size > max_tx_path as usize {
+                                log::
