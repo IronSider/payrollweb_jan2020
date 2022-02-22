@@ -473,4 +473,22 @@ where
                         recall_block_number,
                         recall_extrinsic_index,
                         depth + 1
-                    
+                    );
+                }
+                Err(e) => {
+                    log::error!(
+                        target: "poa",
+                        "Error occurred when retrieving the transaction data: {:?}",
+                        e,
+                    );
+                }
+            }
+        }
+
+        log::warn!(target: "poa", "Failed to create a poa as the max depth: {} has been reached", max_depth);
+
+        Ok(PoaOutcome::MaxDepthReached(max_depth))
+    }
+}
+
+/// Returns a [`PoaOutcome`]
