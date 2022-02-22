@@ -491,4 +491,18 @@ where
     }
 }
 
-/// Returns a [`PoaOutcome`]
+/// Returns a [`PoaOutcome`] after the poa construction.
+pub fn construct_poa<Block, Client, TransactionDataBackend>(
+    client: Arc<Client>,
+    parent: Block::Hash,
+    transaction_data_backend: TransactionDataBackend,
+) -> Result<PoaOutcome, Error<Block>>
+where
+    Block: BlockT<Hash = canyon_primitives::Hash> + 'static,
+    Client: BlockBackend<Block>
+        + HeaderBackend<Block>
+        + ProvideRuntimeApi<Block>
+        + Send
+        + Sync
+        + 'static,
+    Client::Api: PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash> + Po
