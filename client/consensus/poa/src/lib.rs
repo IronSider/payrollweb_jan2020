@@ -505,4 +505,20 @@ where
         + Send
         + Sync
         + 'static,
-    Client::Api: PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash> + Po
+    Client::Api: PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash> + PoaApi<Block>,
+    TransactionDataBackend: TransactionDataBackendT<Block>,
+{
+    PoaBuilder::new(client, transaction_data_backend).build(parent)
+}
+
+/// Extracts PoA digest from a header that should contain one.
+///
+/// The header should have one and only one [`DigestItem::PreRuntime(POA_ENGINE_ID, pre_runtime)`].
+fn fetch_poa<B: BlockT>(header: B::Header, hash: B::Hash) -> Result<ProofOfAccess, Error<B>> {
+    use DigestItem::Seal;
+
+    let poa_seal = header
+        .digest()
+        .logs()
+        .iter()
+        .filter(|dige
