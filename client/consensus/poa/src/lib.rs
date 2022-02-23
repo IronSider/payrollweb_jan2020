@@ -521,4 +521,19 @@ fn fetch_poa<B: BlockT>(header: B::Header, hash: B::Hash) -> Result<ProofOfAcces
         .digest()
         .logs()
         .iter()
-        .filter(|dige
+        .filter(|digest_item| matches!(digest_item, Seal(id, _seal) if id == &POA_ENGINE_ID))
+        .collect::<Vec<_>>();
+
+    match poa_seal.len() {
+        0 => Err(Error::<B>::NoDigest(hash)),
+        1 => match poa_seal[0] {
+            Seal(_id, seal) => Decode::decode(&mut seal.as_slice()).map_err(Error::<B>::Codec),
+            _ => unreachable!("Only items using POA_ENGINE_ID has been filtered; qed"),
+        },
+        _ => Err(Error::<B>::MultipleDigests(hash)),
+    }
+}
+
+/// A pure block importer for PoA.
+///
+/// This importer h
