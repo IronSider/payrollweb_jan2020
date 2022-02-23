@@ -536,4 +536,18 @@ fn fetch_poa<B: BlockT>(header: B::Header, hash: B::Hash) -> Result<ProofOfAcces
 
 /// A pure block importer for PoA.
 ///
-/// This importer h
+/// This importer has to be used with other mature block importer
+/// together, e.g., grandpa block import, for it only verifies the
+/// validity of PoA sealed digest item in the header and nothing else.
+pub struct PurePoaBlockImport<B, I, C, S> {
+    inner: I,
+    select_chain: S,
+    client: Arc<C>,
+    phatom: PhantomData<B>,
+}
+
+impl<B: Clone, I: Clone, C, S: Clone> Clone for PurePoaBlockImport<B, I, C, S> {
+    fn clone(&self) -> Self {
+        Self {
+            inner: self.inner.clone(),
+            select_chain: self.sele
