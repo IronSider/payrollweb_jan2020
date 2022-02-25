@@ -584,3 +584,23 @@ where
     I::Error: Into<ConsensusError>,
     S: SelectChain<B>,
     C: ProvideRuntimeApi<B>
+        + Send
+        + Sync
+        + BlockBackend<B>
+        + HeaderBackend<B>
+        + AuxStore
+        + ProvideCache<B>
+        + BlockOf,
+    C::Api: BlockBuilderApi<B> + PermastoreApi<B, NumberFor<B>, u32, B::Hash> + PoaApi<B>,
+{
+    type Error = ConsensusError;
+    type Transaction = sp_api::TransactionFor<C, B>;
+
+    async fn check_block(
+        &mut self,
+        block: BlockCheckParams<B>,
+    ) -> Result<ImportResult, Self::Error> {
+        self.inner.check_block(block).await.map_err(Into::into)
+    }
+
+    async fn i
