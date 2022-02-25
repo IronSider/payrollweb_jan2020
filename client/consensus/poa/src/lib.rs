@@ -550,4 +550,20 @@ impl<B: Clone, I: Clone, C, S: Clone> Clone for PurePoaBlockImport<B, I, C, S> {
     fn clone(&self) -> Self {
         Self {
             inner: self.inner.clone(),
-            select_chain: self.sele
+            select_chain: self.select_chain.clone(),
+            client: self.client.clone(),
+            phatom: self.phatom,
+        }
+    }
+}
+
+impl<B, I, C, S> PurePoaBlockImport<B, I, C, S>
+where
+    B: BlockT,
+    I: BlockImport<B, Transaction = sp_api::TransactionFor<C, B>> + Send + Sync,
+    I::Error: Into<ConsensusError>,
+    C: ProvideRuntimeApi<B> + Send + Sync + HeaderBackend<B> + AuxStore + ProvideCache<B> + BlockOf,
+    C::Api: BlockBuilderApi<B>,
+{
+    /// Creates a new block import suitable to be used in PoA.
+    pub fn new(inner: I, cli
