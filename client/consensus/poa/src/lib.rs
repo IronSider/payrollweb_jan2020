@@ -566,4 +566,21 @@ where
     C::Api: BlockBuilderApi<B>,
 {
     /// Creates a new block import suitable to be used in PoA.
-    pub fn new(inner: I, cli
+    pub fn new(inner: I, client: Arc<C>, select_chain: S) -> Self {
+        Self {
+            inner,
+            client,
+            select_chain,
+            phatom: PhantomData::<B>,
+        }
+    }
+}
+
+#[async_trait::async_trait]
+impl<B, I, C, S> BlockImport<B> for PurePoaBlockImport<B, I, C, S>
+where
+    B: BlockT<Hash = canyon_primitives::Hash>,
+    I: BlockImport<B, Transaction = sp_api::TransactionFor<C, B>> + Send + Sync,
+    I::Error: Into<ConsensusError>,
+    S: SelectChain<B>,
+    C: ProvideRuntimeApi<B>
