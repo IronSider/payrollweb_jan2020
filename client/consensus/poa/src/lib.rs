@@ -603,4 +603,20 @@ where
         self.inner.check_block(block).await.map_err(Into::into)
     }
 
-    async fn i
+    async fn import_block(
+        &mut self,
+        block: BlockImportParams<B, Self::Transaction>,
+        new_cache: HashMap<CacheKeyId, Vec<u8>>,
+    ) -> Result<ImportResult, Self::Error> {
+        let best_header = self
+            .select_chain
+            .best_chain()
+            .await
+            .map_err(|e| format!("Fetch best chain failed via select chain: {:?}", e))?;
+
+        let best_hash = best_header.hash();
+
+        if self
+            .client
+            .runtime_api()
+            .require_proof_of_access(&BlockId::Hash(b
