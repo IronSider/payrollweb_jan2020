@@ -619,4 +619,18 @@ where
         if self
             .client
             .runtime_api()
-            .require_proof_of_access(&BlockId::Hash(b
+            .require_proof_of_access(&BlockId::Hash(best_hash))
+            .map_err(Error::<B>::ApiError)?
+        {
+            let header = block.post_header();
+            let poa = fetch_poa::<B>(header, best_hash)?;
+
+            let parent_hash = *block.header.parent_hash();
+            let poa_config = self
+                .client
+                .runtime_api()
+                .poa_config(&BlockId::Hash(parent_hash))
+                .map_err(Error::<B>::ApiError)?;
+
+            poa.check_validity(&poa_config)
+                .
