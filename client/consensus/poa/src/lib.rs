@@ -633,4 +633,20 @@ where
                 .map_err(Error::<B>::ApiError)?;
 
             poa.check_validity(&poa_config)
-                .
+                .map_err(Error::<B>::InvalidPoa)?;
+
+            let weave_size = self
+                .client
+                .runtime_api()
+                .weave_size(&BlockId::Hash(parent_hash))
+                .map_err(Error::<B>::ApiError)?;
+
+            let ProofOfAccess {
+                depth,
+                tx_path,
+                chunk_proof,
+            } = poa;
+
+            let recall_byte = calculate_challenge_byte(parent_hash.encode(), weave_size, depth);
+            let recall_block_number =
+                find
