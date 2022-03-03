@@ -664,4 +664,18 @@ where
                 .chunk_root(
                     &BlockId::Hash(parent_hash),
                     recall_block_number,
-     
+                    recall_info.recall_extrinsic_index,
+                )
+                .map_err(Error::<B>::ApiError)?
+                .ok_or(Error::<B>::ChunkRootNotFound(
+                    BlockId::Number(recall_block_number),
+                    recall_info.recall_extrinsic_index,
+                ))?;
+
+            chunk_proof::ChunkProofVerifier::new(chunk_proof)
+                .verify(&chunk_root)
+                .map_err(Error::<B>::VerifyFailed)?;
+        }
+
+        self.inner
+ 
