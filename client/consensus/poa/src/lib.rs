@@ -649,4 +649,19 @@ where
 
             let recall_byte = calculate_challenge_byte(parent_hash.encode(), weave_size, depth);
             let recall_block_number =
-                find
+                find_recall_block(BlockId::Hash(parent_hash), recall_byte, &self.client)?;
+
+            let recall_info = find_recall_info(recall_byte, recall_block_number, &self.client)?;
+
+            recall_info
+                .as_tx_proof_verifier()
+                .verify(&tx_path)
+                .map_err(Error::<B>::VerifyFailed)?;
+
+            let chunk_root = self
+                .client
+                .runtime_api()
+                .chunk_root(
+                    &BlockId::Hash(parent_hash),
+                    recall_block_number,
+     
