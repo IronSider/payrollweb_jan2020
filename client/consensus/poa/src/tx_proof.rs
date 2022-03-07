@@ -37,4 +37,24 @@ pub fn build_extrinsic_proof<Block: BlockT<Hash = canyon_primitives::Hash>>(
     extrinsics_root: Block::Hash,
     extrinsics: Vec<Block::Extrinsic>,
 ) -> Result<Vec<Vec<u8>>, TrieError> {
-    let l
+    let leaves = extrinsics.iter().map(|xt| xt.encode()).collect::<Vec<_>>();
+
+    let (db, root) = prepare_trie_proof(leaves);
+
+    assert_eq!(
+        extrinsics_root, root,
+        "`extrinsics_root` mismatches the calculated root"
+    );
+
+    let proof = sp_trie::generate_trie_proof::<TrieLayout, _, _, _>(
+        &db,
+        extrinsics_root,
+        &[encode_index(extrinsic_index)],
+    )
+    .map_err(|e| TrieError::Trie(Box::new(e)))?;
+
+    Ok(proof)
+}
+
+/// A verifier for tx proof.
+#[derive(Debug, Clone)]
