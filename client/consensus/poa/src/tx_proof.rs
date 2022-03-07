@@ -22,4 +22,19 @@ use sp_core::H256;
 use sp_runtime::traits::Block as BlockT;
 
 use canyon_primitives::ExtrinsicIndex;
-use cp_consensus_poa::enc
+use cp_consensus_poa::encode_index;
+use cp_permastore::{TrieLayout, VerifyError};
+
+use crate::trie::{prepare_trie_proof, TrieError};
+
+/// Returns the calculated merkle proof given `extrinsic_index` and `extrinsics_root`.
+///
+/// # Panics
+///
+/// Panics if the calculated extrinsic root mismatches.
+pub fn build_extrinsic_proof<Block: BlockT<Hash = canyon_primitives::Hash>>(
+    extrinsic_index: ExtrinsicIndex,
+    extrinsics_root: Block::Hash,
+    extrinsics: Vec<Block::Extrinsic>,
+) -> Result<Vec<Vec<u8>>, TrieError> {
+    let l
