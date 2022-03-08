@@ -58,3 +58,18 @@ pub fn build_extrinsic_proof<Block: BlockT<Hash = canyon_primitives::Hash>>(
 
 /// A verifier for tx proof.
 #[derive(Debug, Clone)]
+pub struct TxProofVerifier<B: BlockT> {
+    /// Recall extrinsic.
+    recall_extrinsic: B::Extrinsic,
+    /// Extrinsics root of recall block.
+    extrinsics_root: B::Hash,
+    /// Extrinsic index of `recall_extrinsic`.
+    recall_extrinsic_index: ExtrinsicIndex,
+}
+
+impl<B: BlockT<Hash = canyon_primitives::Hash>> TxProofVerifier<B> {
+    /// Creates a new instance of [`TxProofVerifier`].
+    pub fn new(
+        recall_extrinsic: B::Extrinsic,
+        extrinsics_root: B::Hash,
+        recall_extrins
