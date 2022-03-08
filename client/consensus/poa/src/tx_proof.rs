@@ -72,4 +72,24 @@ impl<B: BlockT<Hash = canyon_primitives::Hash>> TxProofVerifier<B> {
     pub fn new(
         recall_extrinsic: B::Extrinsic,
         extrinsics_root: B::Hash,
-        recall_extrins
+        recall_extrinsic_index: ExtrinsicIndex,
+    ) -> Self {
+        Self {
+            recall_extrinsic,
+            extrinsics_root,
+            recall_extrinsic_index,
+        }
+    }
+
+    /// Returns Ok(()) if `tx_path` matches the inner tx proof.
+    pub fn verify(&self, tx_path: &[Vec<u8>]) -> Result<(), VerifyError> {
+        verify_extrinsic_proof(
+            &self.extrinsics_root,
+            self.recall_extrinsic_index,
+            self.recall_extrinsic.encode(),
+            tx_path,
+        )
+    }
+}
+
+/// Veri
