@@ -110,4 +110,17 @@ pub fn verify_extrinsic_proof(
 
 #[cfg(test)]
 mod tests {
-    use s
+    use super::*;
+    use sc_block_builder::{BlockBuilder, RecordProof};
+    use sp_blockchain::HeaderBackend;
+    use sp_keyring::AccountKeyring::{Alice, Bob};
+    use substrate_test_runtime::{Block, Transfer};
+    use substrate_test_runtime_client::{
+        BlockBuilderExt, DefaultTestClientBuilderExt, TestClientBuilderExt,
+    };
+
+    #[test]
+    fn test_extrinsic_proof() {
+        let builder = substrate_test_runtime_client::TestClientBuilder::new();
+        let backend = builder.backend();
+        let client
