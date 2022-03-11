@@ -145,4 +145,22 @@ mod tests {
             .unwrap();
 
         block_builder
-            .push
+            .push_transfer(Transfer {
+                from: Bob.into(),
+                to: Alice.into(),
+                amount: 1,
+                nonce: 0,
+            })
+            .unwrap();
+
+        let built_block = block_builder.build().unwrap();
+
+        let (block, extrinsics) = built_block.block.deconstruct();
+
+        let extrinsics_root = block.extrinsics_root;
+
+        let proof0 =
+            build_extrinsic_proof::<Block>(0, extrinsics_root, extrinsics.clone()).unwrap();
+
+        let proof1 =
+            build_extrinsic_proof::<Block>(1,
