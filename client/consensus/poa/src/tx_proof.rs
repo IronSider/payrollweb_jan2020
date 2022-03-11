@@ -185,4 +185,8 @@ mod tests {
             &extrinsics_root,
             1,
             extrinsics[1].clone().encode(),
-      
+            &proof1
+        )
+        .is_ok());
+    }
+}
