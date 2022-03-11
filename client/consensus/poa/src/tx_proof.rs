@@ -163,4 +163,26 @@ mod tests {
             build_extrinsic_proof::<Block>(0, extrinsics_root, extrinsics.clone()).unwrap();
 
         let proof1 =
-            build_extrinsic_proof::<Block>(1,
+            build_extrinsic_proof::<Block>(1, extrinsics_root, extrinsics.clone()).unwrap();
+
+        assert!(verify_extrinsic_proof(
+            &extrinsics_root,
+            0,
+            extrinsics[0].clone().encode(),
+            &proof0
+        )
+        .is_ok());
+
+        assert!(verify_extrinsic_proof(
+            &extrinsics_root,
+            0,
+            extrinsics[1].clone().encode(),
+            &proof0
+        )
+        .is_err());
+
+        assert!(verify_extrinsic_proof(
+            &extrinsics_root,
+            1,
+            extrinsics[1].clone().encode(),
+      
