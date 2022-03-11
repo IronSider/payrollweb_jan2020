@@ -123,4 +123,26 @@ mod tests {
     fn test_extrinsic_proof() {
         let builder = substrate_test_runtime_client::TestClientBuilder::new();
         let backend = builder.backend();
-        let client
+        let client = builder.build();
+
+        let mut block_builder = BlockBuilder::new(
+            &client,
+            client.info().best_hash,
+            client.info().best_number,
+            RecordProof::Yes,
+            Default::default(),
+            &*backend,
+        )
+        .unwrap();
+
+        block_builder
+            .push_transfer(Transfer {
+                from: Alice.into(),
+                to: Bob.into(),
+                amount: 123,
+                nonce: 0,
+            })
+            .unwrap();
+
+        block_builder
+            .push
