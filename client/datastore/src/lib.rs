@@ -21,4 +21,28 @@
 //! This crate provides the feature of persistent storage for the transaction data
 //! expected to exist indefinitely.
 //!
-//! Currently, it is implemented on the top
+//! Currently, it is implemented on the top of offchain storage, which is a persistent
+//! local storage of each node.
+
+#[cfg(test)]
+mod tests;
+
+use std::sync::Arc;
+
+use codec::Encode;
+
+use sc_client_db::offchain::LocalStorage;
+use sp_api::ProvideRuntimeApi;
+use sp_blockchain::HeaderBackend;
+use sp_runtime::{
+    generic::BlockId,
+    offchain::OffchainStorage,
+    traits::{Block as BlockT, NumberFor},
+};
+
+use cp_permastore::{PermaStorage, PermastoreApi};
+
+/// Permanent storage backed by offchain storage.
+#[derive(Clone)]
+pub struct PermanentStorage<C> {
+    offchain_storage: LocalSto
