@@ -45,4 +45,22 @@ use cp_permastore::{PermaStorage, PermastoreApi};
 /// Permanent storage backed by offchain storage.
 #[derive(Clone)]
 pub struct PermanentStorage<C> {
-    offchain_storage: LocalSto
+    offchain_storage: LocalStorage,
+    client: Arc<C>,
+}
+
+impl<C> PermanentStorage<C> {
+    /// Creates new perma storage for tests.
+    #[cfg(any(feature = "test-helpers", test))]
+    pub fn new_test(client: Arc<C>) -> Self {
+        Self {
+            offchain_storage: LocalStorage::new_test(),
+            client,
+        }
+    }
+
+    /// Creates a new instance of [`PermaStorage`] backed by offchain storage.
+    pub fn new(offchain_storage: LocalStorage, client: Arc<C>) -> Self {
+        Self {
+            offchain_storage,
+        
