@@ -63,4 +63,24 @@ impl<C> PermanentStorage<C> {
     pub fn new(offchain_storage: LocalStorage, client: Arc<C>) -> Self {
         Self {
             offchain_storage,
-        
+            client,
+        }
+    }
+}
+
+impl<C> cp_permastore::PermaStorage for PermanentStorage<C>
+where
+    C: Send + Sync,
+{
+    /// Sets the value of transaction data given `key`.
+    ///
+    /// # Arguments
+    ///
+    /// * `key`: encoded chunk root of transaction data.
+    /// * `value`: entire data of a transaction.
+    ///
+    /// NOTE: the maximum size of served value is 10MiB,
+    /// this limit should be enforced by the higher level API.
+    fn submit(&mut self, key: &[u8], value: &[u8]) {
+        self.offchain_storage
+            .set(sp_offcha
