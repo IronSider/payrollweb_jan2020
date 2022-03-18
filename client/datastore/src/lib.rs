@@ -83,4 +83,23 @@ where
     /// this limit should be enforced by the higher level API.
     fn submit(&mut self, key: &[u8], value: &[u8]) {
         self.offchain_storage
-            .set(sp_offcha
+            .set(sp_offchain::STORAGE_PREFIX, key, value)
+    }
+
+    /// Returns the entire transaction data given `key`.
+    ///
+    /// # Arguments
+    ///
+    /// * `key`: chunk_root of the transaction data.
+    fn retrieve(&self, key: &[u8]) -> Option<Vec<u8>> {
+        self.offchain_storage.get(sp_offchain::STORAGE_PREFIX, key)
+    }
+
+    /// Removes the storage value under given key.
+    ///
+    /// # Arguments
+    ///
+    /// * `key`: encoded chunk root of transaction data.
+    fn remove(&mut self, key: &[u8]) {
+        self.offchain_storage
+            .re
