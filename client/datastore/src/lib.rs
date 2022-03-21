@@ -102,4 +102,19 @@ where
     /// * `key`: encoded chunk root of transaction data.
     fn remove(&mut self, key: &[u8]) {
         self.offchain_storage
-            .re
+            .remove(sp_offchain::STORAGE_PREFIX, key)
+    }
+}
+
+/// Error type for datastore.
+#[derive(thiserror::Error, Debug)]
+pub enum Error<Block: BlockT> {
+    /// Block number not found.
+    #[error("Block number not found given block id `{0}`")]
+    BlockNumberNotFound(BlockId<Block>),
+    /// Chunk root does not exist.
+    #[error("Chunk root is None at block: {0}, extrinsic index: {1}")]
+    ChunkRootIsNone(BlockId<Block>, u32),
+    /// Blockchain error.
+    #[error(transparent)]
+    Blockchain(#[from] Box<
