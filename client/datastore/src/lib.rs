@@ -117,4 +117,20 @@ pub enum Error<Block: BlockT> {
     ChunkRootIsNone(BlockId<Block>, u32),
     /// Blockchain error.
     #[error(transparent)]
-    Blockchain(#[from] Box<
+    Blockchain(#[from] Box<sp_blockchain::Error>),
+    /// Runtime api error.
+    #[error(transparent)]
+    ApiError(#[from] sp_api::ApiError),
+}
+
+/// Backend for storing a map of (block_number, extrinsic_index) to chunk_root.
+pub trait ChunkRootBackend<Block: BlockT> {
+    /// Returns chunk root given `block_number` and `extrinsic_index`.
+    ///
+    /// It's fetched from the runtime now.
+    fn chunk_root(
+        &self,
+        at: Option<BlockId<Block>>,
+        block_number: NumberFor<Block>,
+        extrinsic_index: u32,
+    ) -
