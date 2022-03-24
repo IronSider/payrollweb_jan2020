@@ -133,4 +133,19 @@ pub trait ChunkRootBackend<Block: BlockT> {
         at: Option<BlockId<Block>>,
         block_number: NumberFor<Block>,
         extrinsic_index: u32,
-    ) -
+    ) -> Result<Option<Block::Hash>, Error<Block>>;
+}
+
+/// Permanent transaction data backend.
+///
+/// High level API for accessing the transaction data.
+pub trait TransactionDataBackend<Block: BlockT>: PermaStorage + ChunkRootBackend<Block> {
+    /// Get transaction data. Returns `None` if data is not found.
+    fn transaction_data(
+        &self,
+        id: BlockId<Block>,
+        extrinsic_index: u32,
+    ) -> Result<Option<Vec<u8>>, Error<Block>>;
+}
+
+impl<Block, C> TransactionDataBackend<Block> for Per
