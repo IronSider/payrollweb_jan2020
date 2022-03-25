@@ -162,4 +162,20 @@ where
         log::debug!(
             target: "datastore",
             "Fetching chunk root at block_id: {}, extrinsic_index: {}",
-            block_id, extrinsic_index
+            block_id, extrinsic_index,
+        );
+
+        let block_number = self
+            .client
+            .block_number_from_id(&block_id)
+            .map_err(Box::new)?
+            .ok_or(Error::BlockNumberNotFound(block_id))?;
+
+        let chunk_root = self
+            .chunk_root(None, block_number, extrinsic_index)?
+            .ok_or(Error::ChunkRootIsNone(block_id, extrinsic_index))?;
+
+        let key = chunk_root.encode();
+        log::debug!(
+            target: "datastore",
+            "Fetching the transaction data, chunk root: {:?}, database key: {:?
