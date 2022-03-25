@@ -148,4 +148,18 @@ pub trait TransactionDataBackend<Block: BlockT>: PermaStorage + ChunkRootBackend
     ) -> Result<Option<Vec<u8>>, Error<Block>>;
 }
 
-impl<Block, C> TransactionDataBackend<Block> for Per
+impl<Block, C> TransactionDataBackend<Block> for PermanentStorage<C>
+where
+    Block: BlockT,
+    C: HeaderBackend<Block> + ProvideRuntimeApi<Block> + Send + Sync,
+    C::Api: cp_permastore::PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash>,
+{
+    fn transaction_data(
+        &self,
+        block_id: BlockId<Block>,
+        extrinsic_index: u32,
+    ) -> Result<Option<Vec<u8>>, Error<Block>> {
+        log::debug!(
+            target: "datastore",
+            "Fetching chunk root at block_id: {}, extrinsic_index: {}",
+            block_id, extrinsic_index
