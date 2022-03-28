@@ -197,4 +197,11 @@ where
         at: Option<BlockId<Block>>,
         block_number: NumberFor<Block>,
         extrinsic_index: u32,
-    ) -> Result<Option<Block::Has
+    ) -> Result<Option<Block::Hash>, Error<Block>> {
+        let at = at.unwrap_or_else(|| BlockId::hash(self.client.info().best_hash));
+        self.client
+            .runtime_api()
+            .chunk_root(&at, block_number, extrinsic_index)
+            .map_err(Error::ApiError)
+    }
+}
