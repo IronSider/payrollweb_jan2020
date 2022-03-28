@@ -16,4 +16,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Canyon. If not, see <http://www.gnu.org/licenses/>.
 
-use std:
+use std::sync::Arc;
+
+use sp_keystore::testing::KeyStore;
+use substrate_test_runtime_client::DefaultTestClientBuilderExt;
+use substrate_test_runtime_client::TestClientBuilderExt;
+
+use cp_permastore::PermaStorage;
+
+use crate::PermanentStorage;
+
+#[test]
+fn basic_operations_should_work() {
+    let keystore = Arc::new(KeyStore::new());
+    let client_builder = substrate_test_runtime_client::TestClientBuilder::new();
+    let client = Arc::new(client_builder.set_keystore(keystore.clone()).build());
+
+    let mut perma_storage = PermanentStor
