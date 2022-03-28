@@ -178,4 +178,23 @@ where
         let key = chunk_root.encode();
         log::debug!(
             target: "datastore",
-            "Fetching the transaction data, chunk root: {:?}, database key: {:?
+            "Fetching the transaction data, chunk root: {:?}, database key: {:?}",
+            chunk_root, key,
+        );
+
+        Ok(self.retrieve(&key))
+    }
+}
+
+impl<Block, C> ChunkRootBackend<Block> for PermanentStorage<C>
+where
+    Block: BlockT,
+    C: HeaderBackend<Block> + ProvideRuntimeApi<Block> + Send + Sync,
+    C::Api: cp_permastore::PermastoreApi<Block, NumberFor<Block>, u32, Block::Hash>,
+{
+    fn chunk_root(
+        &self,
+        at: Option<BlockId<Block>>,
+        block_number: NumberFor<Block>,
+        extrinsic_index: u32,
+    ) -> Result<Option<Block::Has
