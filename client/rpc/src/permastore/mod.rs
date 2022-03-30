@@ -98,3 +98,61 @@ where
     ) -> Result<Vec<TxHash<P>>> {
         // FIXME: remove the transaction data directly or later?
         Ok(self.author.remove_extrinsic(bytes_or_hash)?)
+    }
+
+    fn remove_data(&self, chunk_root: <B as BlockT>::Hash) -> Result<bool> {
+        self.deny_unsafe.check_if_safe()?;
+
+        self.storage.write().remove(chunk_root.encode().as_slice());
+
+        Ok(true)
+    }
+
+    // Can this be an attack as anyone can submit arbitrary data to the node?
+    // TODO: add tests for submit and retrieve?
+    fn submit(&self, value: Bytes) -> Result<H256> {
+        let data_size = value.deref().len() as u32;
+        if data_size > MAX_UPLOAD_DATA_SIZE {
+            return Err(Error::DataTooLarge(InvalidCount::new(
+                data_size,
+                MAX_UPLOAD_DATA_SIZE,
+            )));
+        }
+
+        let chunks = value
+            .0
+            .chunks(CHUNK_SIZE as usize)
+            .map(|c| BlakeTwo256::hash(c).encode())
+            .collect();
+
+        let chunk_root = BlakeTwo256::ordered_trie_root(chunks);
+
+        let key = chunk_root.encode();
+
+        log::debug!(
+            target: "rpc::permastore",
+            "Submitted chunk_root: {:?}, stored key: {:?}",
+            chunk_root, key,
+        );
+
+        // TODO: verify chunk_root matches the submitted data.
+        self.storage.write().submit(key.as_slice(), &*value);
+
+        Ok(chunk_root)
+    }
+
+    fn retrieve(&self, key: Bytes) -> Result<Option<Bytes>> {
+        if let Some(value) = self.storage.read().retrieve(&*key) {
+            let data_size = value.len() as u32;
+            if data_size > MAX_DOWNLOAD_DATA_SIZE {
+                return Err(Error::DataTooLarge(InvalidCount::new(
+                    data_size,
+                    MAX_DOWNLOAD_DATA_SIZE,
+                )));
+            }
+            Ok(Some(value.into()))
+        } else {
+            Ok(None)
+        }
+    }
+}
