@@ -32,4 +32,14 @@ fn basic_operations_should_work() {
     let client_builder = substrate_test_runtime_client::TestClientBuilder::new();
     let client = Arc::new(client_builder.set_keystore(keystore.clone()).build());
 
-    let mut perma_storage = PermanentStor
+    let mut perma_storage = PermanentStorage::new_test(client.clone());
+
+    perma_storage.submit(b"key", b"value");
+
+    assert!(perma_storage.exists(b"key"));
+    assert_eq!(perma_storage.retrieve(b"key"), Some(b"value".to_vec()));
+
+    perma_storage.remove(b"key");
+    assert!(!perma_storage.exists(b"key"));
+    assert_eq!(perma_storage.retrieve(b"key"), None);
+}

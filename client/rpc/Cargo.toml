@@ -1,0 +1,41 @@
+
+[package]
+name = "cc-rpc"
+version = "0.1.0"
+authors = ["Canyon Labs <https://github.com/canyon-network>"]
+edition = "2018"
+license = "GPL-3.0"
+homepage = "https://canyon-network.io"
+repository = "https://github.com/canyon-network/canyon/"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+futures = "0.3.16"
+jsonrpc-core = "18.0.0"
+jsonrpc-core-client = "18.0.0"
+jsonrpc-derive = "18.0.0"
+log = "0.4"
+parking_lot = "0.11"
+
+sc-rpc-api = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-transaction-pool-api = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+sp-core = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+cc-rpc-api = { path = "../rpc-api" }
+cp-permastore = { path = "../../primitives/permastore" }
+
+[dev-dependencies]
+assert_matches = "1.3.0"
+codec = { package = "parity-scale-codec", version = "2.3" }
+jsonrpc-pubsub = "18.0.0"
+
+sc-rpc = { git = "https://github.com/paritytech/substrate", features = ["test-helpers"] , branch = "master" }
+sc-transaction-pool = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sp-keystore = { git = "https://github.com/paritytech/substrate", branch = "master" }
+substrate-test-runtime-client = { git = "https://github.com/paritytech/substrate", branch = "master" }
+
+cc-datastore = { path = "../datastore", features = ["test-helpers"] }
