@@ -9,4 +9,21 @@
 // or (at your option) any later version.
 //
 // Canyon is distributed in the hope that it will be useful,
-// but WITHOUT A
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Canyon. If not, see <http://www.gnu.org/licenses/>.
+
+use super::*;
+
+use std::sync::Arc;
+
+use assert_matches::assert_matches;
+use codec::Encode;
+use futures::{executor, StreamExt};
+use jsonrpc_pubsub::{manager::SubscriptionManager, SubscriptionId};
+use parking_lot::RwLock;
+
+use 
