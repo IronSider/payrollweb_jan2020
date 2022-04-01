@@ -81,4 +81,24 @@ impl Default for TestSetup {
 }
 
 impl TestSetup {
-    fn author(&
+    fn author(&self) -> TestAuthor {
+        let subscriptions = SubscriptionManager::new(Arc::new(sc_rpc::testing::TaskExecutor));
+        sc_rpc::author::Author::new(
+            self.client.clone(),
+            self.pool.clone(),
+            subscriptions,
+            self.keystore.clone(),
+            DenyUnsafe::No,
+        )
+    }
+
+    fn permastore(
+        &self,
+    ) -> Permastore<
+        cc_datastore::PermanentStorage<Client<Backend>>,
+        FullTransactionPool,
+        TestAuthor,
+        Block,
+    > {
+        Permastore {
+        
