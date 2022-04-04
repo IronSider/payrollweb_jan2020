@@ -101,4 +101,19 @@ impl TestSetup {
         Block,
     > {
         Permastore {
-        
+            storage: Arc::new(RwLock::new(cc_datastore::PermanentStorage::new_test(
+                self.client.clone(),
+            ))),
+            pool: self.pool.clone(),
+            author: self.author(),
+            deny_unsafe: DenyUnsafe::No,
+            phatom: PhantomData::<Block>,
+        }
+    }
+}
+
+#[test]
+fn submit_transaction_should_not_cause_error() {
+    let p = TestSetup::default().permastore();
+    let xt = uxt(AccountKeyring::Alice, 1).encode();
+    let h: H256 = blake2_256(
