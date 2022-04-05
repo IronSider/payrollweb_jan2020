@@ -132,3 +132,22 @@ fn submit_transaction_should_not_cause_error() {
 fn submit_rich_transaction_should_not_cause_error() {
     let p = TestSetup::default().permastore();
     let xt = uxt(AccountKeyring::Alice, 0).encode();
+    let h: H256 = blake2_256(&xt).into();
+
+    let data = b"mocked data".to_vec();
+    assert_matches!(
+        executor::block_on(PermastoreApi::submit_extrinsic(&p, xt.clone().into(), data.clone().into())),
+        Ok(h2) if h == h2
+    );
+    assert!(
+        executor::block_on(PermastoreApi::submit_extrinsic(&p, xt.into(), data.into())).is_err()
+    );
+}
+
+#[test]
+fn should_watch_extrinsic() {
+    // given
+    let setup = TestSetup::default();
+    let p = setup.author();
+
+    let (subscriber, id_rx, data) = jsonrpc_
