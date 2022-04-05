@@ -172,4 +172,18 @@ fn should_watch_extrinsic() {
         let tx = Transfer {
             amount: 5,
             nonce: 0,
-            fr
+            from: AccountKeyring::Alice.into(),
+            to: Default::default(),
+        };
+        tx.into_signed_tx()
+    };
+    executor::block_on(AuthorApi::submit_extrinsic(&p, replacement.encode().into())).unwrap();
+    let (res, data) = executor::block_on(data.into_future());
+
+    let expected = Some(format!(
+        r#"{{"jsonrpc":"2.0","method":"test","params":{{"result":"ready","subscription":"{}"}}}}"#,
+        id,
+    ));
+    assert_eq!(res, expected);
+
+    let h = blake2_256(&replacement.encode());
