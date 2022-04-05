@@ -150,4 +150,26 @@ fn should_watch_extrinsic() {
     let setup = TestSetup::default();
     let p = setup.author();
 
-    let (subscriber, id_rx, data) = jsonrpc_
+    let (subscriber, id_rx, data) = jsonrpc_pubsub::typed::Subscriber::new_test("test");
+
+    // when
+    p.watch_extrinsic(
+        Default::default(),
+        subscriber,
+        uxt(AccountKeyring::Alice, 0).encode().into(),
+    );
+
+    let id = executor::block_on(id_rx).unwrap().unwrap();
+    assert_matches!(id, SubscriptionId::String(_));
+
+    let id = match id {
+        SubscriptionId::String(id) => id,
+        _ => unreachable!(),
+    };
+
+    // check notifications
+    let replacement = {
+        let tx = Transfer {
+            amount: 5,
+            nonce: 0,
+            fr
