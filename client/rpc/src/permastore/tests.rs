@@ -187,3 +187,20 @@ fn should_watch_extrinsic() {
     assert_eq!(res, expected);
 
     let h = blake2_256(&replacement.encode());
+    let expected = Some(format!(
+        r#"{{"jsonrpc":"2.0","method":"test","params":{{"result":{{"usurped":"0x{}"}},"subscription":"{}"}}}}"#,
+        HexDisplay::from(&h),
+        id,
+    ));
+
+    let res = executor::block_on(data.into_future()).0;
+    assert_eq!(res, expected);
+}
+
+#[test]
+fn should_return_watch_validation_error() {
+    // given
+    let setup = TestSetup::default();
+    let p = setup.author();
+
+    let (subscriber, id_rx, _data) = jsonrpc_pubsub::typed::Subscriber::new_tes
