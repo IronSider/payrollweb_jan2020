@@ -226,4 +226,24 @@ fn should_return_pending_extrinsics() {
 
     let ex = uxt(AccountKeyring::Alice, 0);
     let data = b"mocked data".to_vec();
-    executor::block_on(
+    executor::block_on(PermastoreApi::submit_extrinsic(
+        &p,
+        ex.encode().into(),
+        data.into(),
+    ))
+    .unwrap();
+    assert_matches!(
+        p.author.pending_extrinsics(),
+        Ok(ref expected) if *expected == vec![Bytes(ex.encode())]
+    );
+}
+
+#[test]
+fn should_remove_extrinsics() {
+    let setup = TestSetup::default();
+    let p = setup.permastore();
+
+    let data: Bytes = b"mocked data".to_vec().into();
+
+    let ex1 = uxt(AccountKeyring::Alice, 0);
+    executor::block_on(p.submit_extrinsic(ex1.encode().into(), data.clone())).unw
