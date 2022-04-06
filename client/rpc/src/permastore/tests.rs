@@ -203,4 +203,27 @@ fn should_return_watch_validation_error() {
     let setup = TestSetup::default();
     let p = setup.author();
 
-    let (subscriber, id_rx, _data) = jsonrpc_pubsub::typed::Subscriber::new_tes
+    let (subscriber, id_rx, _data) = jsonrpc_pubsub::typed::Subscriber::new_test("test");
+
+    // when
+    p.watch_extrinsic(
+        Default::default(),
+        subscriber,
+        uxt(AccountKeyring::Alice, 179).encode().into(),
+    );
+
+    // then
+    let res = executor::block_on(id_rx).unwrap();
+    assert!(
+        res.is_err(),
+        "Expected the transaction to be rejected as invalid."
+    );
+}
+
+#[test]
+fn should_return_pending_extrinsics() {
+    let p = TestSetup::default().permastore();
+
+    let ex = uxt(AccountKeyring::Alice, 0);
+    let data = b"mocked data".to_vec();
+    executor::block_on(
