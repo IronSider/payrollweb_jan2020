@@ -258,4 +258,9 @@ fn should_remove_extrinsics() {
         .remove_extrinsic(vec![
             ExtrinsicOrHash::Hash(hash3),
             // Removing this one will also remove ex2
-            ExtrinsicOrHash::Extrinsic(ex1.encode().int
+            ExtrinsicOrHash::Extrinsic(ex1.encode().into()),
+        ])
+        .unwrap();
+
+    assert_eq!(removed.len(), 3);
+}
