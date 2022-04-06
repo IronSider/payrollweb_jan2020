@@ -246,4 +246,16 @@ fn should_remove_extrinsics() {
     let data: Bytes = b"mocked data".to_vec().into();
 
     let ex1 = uxt(AccountKeyring::Alice, 0);
-    executor::block_on(p.submit_extrinsic(ex1.encode().into(), data.clone())).unw
+    executor::block_on(p.submit_extrinsic(ex1.encode().into(), data.clone())).unwrap();
+    let ex2 = uxt(AccountKeyring::Alice, 1);
+    executor::block_on(p.submit_extrinsic(ex2.encode().into(), data.clone())).unwrap();
+    let ex3 = uxt(AccountKeyring::Bob, 0);
+    let hash3 = executor::block_on(p.submit_extrinsic(ex3.encode().into(), data)).unwrap();
+    assert_eq!(setup.pool.status().ready, 3);
+
+    // now remove all 3
+    let removed = p
+        .remove_extrinsic(vec![
+            ExtrinsicOrHash::Hash(hash3),
+            // Removing this one will also remove ex2
+            ExtrinsicOrHash::Extrinsic(ex1.encode().int
