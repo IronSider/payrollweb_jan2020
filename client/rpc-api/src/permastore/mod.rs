@@ -37,4 +37,17 @@ pub trait PermastoreApi<Hash, BlockHash> {
 
     /// Sepecialized `remove_extrinsic` for removing the extrinsic and data if any.
     #[rpc(name = "permastore_removeExtrinsic")]
-    fn remove_extrinsic(&self, bytes_or_hash: Vec<ExtrinsicOrHash<Hash>>) -> Result<V
+    fn remove_extrinsic(&self, bytes_or_hash: Vec<ExtrinsicOrHash<Hash>>) -> Result<Vec<Hash>>;
+
+    /// Remove the data of a transaction.
+    #[rpc(name = "permastore_removeData")]
+    fn remove_data(&self, chunk_root: BlockHash) -> Result<bool>;
+
+    /// Submit the whole data of a transaction.
+    #[rpc(name = "permastore_submit")]
+    fn submit(&self, value: Bytes) -> Result<H256>;
+
+    /// Fetch storage under given key.
+    #[rpc(name = "permastore_retrieve")]
+    fn retrieve(&self, key: Bytes) -> Result<Option<Bytes>>;
+}
