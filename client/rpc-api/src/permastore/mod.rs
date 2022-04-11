@@ -28,4 +28,13 @@ use self::error::Result;
 
 pub use self::gen_client::Client as OffchainClient;
 
-/// Canyon per
+/// Canyon perma storage RPC API.
+#[rpc]
+pub trait PermastoreApi<Hash, BlockHash> {
+    /// Sepecialized `submit_extrinsic` for submitting the store extrinsic and transaction data.
+    #[rpc(name = "permastore_submitExtrinsic")]
+    fn submit_extrinsic(&self, ext: Bytes, data: Bytes) -> FutureResult<Hash>;
+
+    /// Sepecialized `remove_extrinsic` for removing the extrinsic and data if any.
+    #[rpc(name = "permastore_removeExtrinsic")]
+    fn remove_extrinsic(&self, bytes_or_hash: Vec<ExtrinsicOrHash<Hash>>) -> Result<V
