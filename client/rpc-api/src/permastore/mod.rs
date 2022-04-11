@@ -9,4 +9,23 @@
 // or (at your option) any later version.
 //
 // Canyon is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Canyon. If not, see <http://www.gnu.org/licenses/>.
+
+pub mod error;
+
+use jsonrpc_derive::rpc;
+
+use sc_rpc_api::author::{error::FutureResult, hash::ExtrinsicOrHash};
+
+use sp_core::{Bytes, H256};
+
+use self::error::Result;
+
+pub use self::gen_client::Client as OffchainClient;
+
+/// Canyon per
