@@ -60,3 +60,57 @@ pub enum Error {
     InvalidProof,
     #[error("authoring api: {0}")]
     AuthoringApiError(#[from] sc_rpc_api::author::error::Error),
+    /// Call to an unsafe RPC was denied.
+    #[error("unsafe api: {0}")]
+    UnsafeRpcCalled(#[from] sc_rpc_api::UnsafeRpcError),
+}
+
+const BASE_ERROR: i64 = 6000;
+
+impl From<Error> for rpc::Error {
+    fn from(e: Error) -> Self {
+        match e {
+            Error::DataExists => rpc::Error {
+                code: rpc::ErrorCode::ServerError(BASE_ERROR),
+                message: "transaction data already exists".into(),
+                data: None,
+            },
+            Error::ChunkExists => rpc::Error {
+                code: rpc::ErrorCode::ServerError(BASE_ERROR + 1),
+                message: "chunk data already exists".into(),
+                data: None,
+            },
+            Error::DataTooLarge( invalid_count) => rpc::Error {
+                code: rpc::ErrorCode::ServerError(BASE_ERROR + 2),
+                message: format!("transaction data is too large. {}", invalid_count),
+                data: Some("the transaction data has to be uploaded or downloaded chunk by chunk for being too large.".into()),
+            },
+            Error::ChunkTooLarge => rpc::Error {
+                code: rpc::ErrorCode::ServerError(BASE_ERROR + 3),
+                message: "chunk data is too large".into(),
+                data: None,
+            },
+            Error::DataPathTooLarge => rpc::Error {
+                code: rpc::ErrorCode::ServerError(BASE_ERROR + 4),
+                message: "data path is too large".into(),
+                data: None,
+            },
+            Error::DataSizeTooLarge => rpc::Error {
+                code: rpc::ErrorCode::ServerError(BASE_ERROR + 5),
+                message: "data size is too large".into(),
+                data: None,
+            },
+            Error::InvalidProof => rpc::Error {
+                code: rpc::ErrorCode::ServerError(BASE_ERROR + 6),
+                message: "chunk proof is invalid".into(),
+                data: None,
+            },
+            Error::AuthoringApiError(e) => rpc::Error {
+                code: rpc::ErrorCode::ServerError(BASE_ERROR + 7),
+                message: e.to_string(),
+                data: None,
+            },
+            Error::UnsafeRpcCalled(e) => e.into(),
+        }
+    }
+}
