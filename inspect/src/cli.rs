@@ -18,4 +18,20 @@ pub struct InspectCmd {
     #[structopt(flatten)]
     pub command: InspectSubCmd,
 
-    #[allow(missing_do
+    #[allow(missing_docs)]
+    #[structopt(flatten)]
+    pub shared_params: SharedParams,
+
+    #[allow(missing_docs)]
+    #[structopt(flatten)]
+    pub import_params: ImportParams,
+}
+
+/// A possible inspect sub-commands.
+#[derive(Debug, StructOpt)]
+pub enum InspectSubCmd {
+    /// Decode block with native version of runtime and print out the details.
+    Block {
+        /// Address of the block to print out.
+        ///
+        /// Can be either a block hash (no 0x prefix) or a number to retrieve existing bl
