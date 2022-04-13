@@ -34,4 +34,15 @@ pub enum InspectSubCmd {
     Block {
         /// Address of the block to print out.
         ///
-        /// Can be either a block hash (no 0x prefix) or a number to retrieve existing bl
+        /// Can be either a block hash (no 0x prefix) or a number to retrieve existing block,
+        /// or a 0x-prefixed bytes hex string, representing SCALE encoding of
+        /// a block.
+        #[structopt(value_name = "HASH or NUMBER or BYTES")]
+        input: String,
+    },
+    /// Decode extrinsic with native version of runtime and print out the details.
+    Extrinsic {
+        /// Address of an extrinsic to print out.
+        ///
+        /// Can be either a block hash (no 0x prefix) or number and the index, in the form
+        /// of `{block}:{inde
