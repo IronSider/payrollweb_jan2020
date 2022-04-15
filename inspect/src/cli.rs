@@ -45,4 +45,9 @@ pub enum InspectSubCmd {
         /// Address of an extrinsic to print out.
         ///
         /// Can be either a block hash (no 0x prefix) or number and the index, in the form
-        /// of `{block}:{inde
+        /// of `{block}:{index}` or a 0x-prefixed bytes hex string,
+        /// representing SCALE encoding of an extrinsic.
+        #[structopt(value_name = "BLOCK:INDEX or BYTES")]
+        input: String,
+    },
+}
