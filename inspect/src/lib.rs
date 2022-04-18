@@ -28,4 +28,19 @@ use sp_runtime::{
 
 /// A helper type for a generic block input.
 pub type BlockAddressFor<TBlock> =
-    BlockAddress<<HashFor<TBlock> as
+    BlockAddress<<HashFor<TBlock> as Hash>::Output, NumberFor<TBlock>>;
+
+/// A Pretty formatter implementation.
+pub trait PrettyPrinter<TBlock: Block> {
+    /// Nicely format block.
+    fn fmt_block(&self, fmt: &mut fmt::Formatter, block: &TBlock) -> fmt::Result;
+    /// Nicely format extrinsic.
+    fn fmt_extrinsic(&self, fmt: &mut fmt::Formatter, extrinsic: &TBlock::Extrinsic)
+        -> fmt::Result;
+}
+
+/// Default dummy debug printer.
+#[derive(Default)]
+pub struct DebugPrinter;
+impl<TBlock: Block> PrettyPrinter<TBlock> for DebugPrinter {
+    fn fmt_block(&self, fmt
