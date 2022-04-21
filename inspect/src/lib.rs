@@ -88,4 +88,21 @@ impl std::error::Error for Error {
 }
 
 /// A helper trait to access block headers and bodies.
-pub trait ChainAccess<TBlock: Block>: HeaderBackend<TBlock> 
+pub trait ChainAccess<TBlock: Block>: HeaderBackend<TBlock> + BlockBackend<TBlock> {}
+
+impl<T, TBlock> ChainAccess<TBlock> for T
+where
+    TBlock: Block,
+    T: sp_blockchain::HeaderBackend<TBlock> + sc_client_api::BlockBackend<TBlock>,
+{
+}
+
+/// Blockchain inspector.
+pub struct Inspector<TBlock: Block, TPrinter: PrettyPrinter<TBlock> = DebugPrinter> {
+    printer: TPrinter,
+    chain: Box<dyn ChainAccess<TBlock>>,
+    _block: PhantomData<TBlock>,
+}
+
+impl<TBlock: Block, TPrinter: PrettyPrinter<TBlock>> Inspector<TBlock, TPrinter> {
+    /// Create new instance of the inspector with 
