@@ -55,3 +55,20 @@ impl<TBlock: Block> PrettyPrinter<TBlock> for DebugPrinter {
         Ok(())
     }
 
+    fn fmt_extrinsic(
+        &self,
+        fmt: &mut fmt::Formatter,
+        extrinsic: &TBlock::Extrinsic,
+    ) -> fmt::Result {
+        writeln!(fmt, " {:#?}", extrinsic)?;
+        writeln!(fmt, " Bytes: {:?}", HexDisplay::from(&extrinsic.encode()))?;
+        Ok(())
+    }
+}
+
+/// Aggregated error for `Inspector` operations.
+#[derive(Debug, derive_more::From, derive_more::Display)]
+pub enum Error {
+    /// Could not decode Block or Extrinsic.
+    Codec(codec::Error),
+    /// Error 
