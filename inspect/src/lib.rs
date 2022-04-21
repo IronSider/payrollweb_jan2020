@@ -71,4 +71,21 @@ impl<TBlock: Block> PrettyPrinter<TBlock> for DebugPrinter {
 pub enum Error {
     /// Could not decode Block or Extrinsic.
     Codec(codec::Error),
-    /// Error 
+    /// Error accessing blockchain DB.
+    Blockchain(sp_blockchain::Error),
+    /// Given block has not been found.
+    NotFound(String),
+}
+
+impl std::error::Error for Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match *self {
+            Self::Codec(ref e) => Some(e),
+            Self::Blockchain(ref e) => Some(e),
+            Self::NotFound(_) => None,
+        }
+    }
+}
+
+/// A helper trait to access block headers and bodies.
+pub trait ChainAccess<TBlock: Block>: HeaderBackend<TBlock> 
