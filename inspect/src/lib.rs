@@ -135,4 +135,13 @@ impl<TBlock: Block, TPrinter: PrettyPrinter<TBlock>> Inspector<TBlock, TPrinter>
         Ok(format!("{}", BlockPrinter(block, &self.printer)))
     }
 
-    fn
+    fn get_block(&self, input: BlockAddressFor<TBlock>) -> Result<TBlock, Error> {
+        Ok(match input {
+            BlockAddress::Bytes(bytes) => TBlock::decode(&mut &*bytes)?,
+            BlockAddress::Number(number) => {
+                let id = BlockId::number(number);
+                let not_found = format!("Could not find block {:?}", id);
+                let body = self
+                    .chain
+                    .block_body(&id)?
+                    .ok_or_else(|| Err
