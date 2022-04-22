@@ -105,4 +105,22 @@ pub struct Inspector<TBlock: Block, TPrinter: PrettyPrinter<TBlock> = DebugPrint
 }
 
 impl<TBlock: Block, TPrinter: PrettyPrinter<TBlock>> Inspector<TBlock, TPrinter> {
-    /// Create new instance of the inspector with 
+    /// Create new instance of the inspector with default printer.
+    pub fn new(chain: impl ChainAccess<TBlock> + 'static) -> Self
+    where
+        TPrinter: Default,
+    {
+        Self::with_printer(chain, Default::default())
+    }
+
+    /// Customize pretty-printing of the data.
+    pub fn with_printer(chain: impl ChainAccess<TBlock> + 'static, printer: TPrinter) -> Self {
+        Inspector {
+            chain: Box::new(chain) as _,
+            printer,
+            _block: Default::default(),
+        }
+    }
+
+    /// Get a pretty-printed block.
+    pub 
