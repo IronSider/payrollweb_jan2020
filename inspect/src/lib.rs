@@ -123,4 +123,16 @@ impl<TBlock: Block, TPrinter: PrettyPrinter<TBlock>> Inspector<TBlock, TPrinter>
     }
 
     /// Get a pretty-printed block.
-    pub 
+    pub fn block(&self, input: BlockAddressFor<TBlock>) -> Result<String, Error> {
+        struct BlockPrinter<'a, A, B>(A, &'a B);
+        impl<'a, A: Block, B: PrettyPrinter<A>> fmt::Display for BlockPrinter<'a, A, B> {
+            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+                self.1.fmt_block(fmt, &self.0)
+            }
+        }
+
+        let block = self.get_block(input)?;
+        Ok(format!("{}", BlockPrinter(block, &self.printer)))
+    }
+
+    fn
