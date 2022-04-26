@@ -144,4 +144,17 @@ impl<TBlock: Block, TPrinter: PrettyPrinter<TBlock>> Inspector<TBlock, TPrinter>
                 let body = self
                     .chain
                     .block_body(&id)?
-                    .ok_or_else(|| Err
+                    .ok_or_else(|| Error::NotFound(not_found.clone()))?;
+                let header = self
+                    .chain
+                    .header(id)?
+                    .ok_or_else(|| Error::NotFound(not_found.clone()))?;
+                TBlock::new(header, body)
+            }
+            BlockAddress::Hash(hash) => {
+                let id = BlockId::hash(hash);
+                let not_found = format!("Could not find block {:?}", id);
+                let body = self
+                    .chain
+                    .block_body(&id)?
+ 
