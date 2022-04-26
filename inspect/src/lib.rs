@@ -157,4 +157,19 @@ impl<TBlock: Block, TPrinter: PrettyPrinter<TBlock>> Inspector<TBlock, TPrinter>
                 let body = self
                     .chain
                     .block_body(&id)?
- 
+                    .ok_or_else(|| Error::NotFound(not_found.clone()))?;
+                let header = self
+                    .chain
+                    .header(id)?
+                    .ok_or_else(|| Error::NotFound(not_found.clone()))?;
+                TBlock::new(header, body)
+            }
+        })
+    }
+
+    /// Get a pretty-printed extrinsic.
+    pub fn extrinsic(
+        &self,
+        input: ExtrinsicAddress<<HashFor<TBlock> as Hash>::Output, NumberFor<TBlock>>,
+    ) -> Result<String, Error> {
+        struct ExtrinsicPrinter<'a, A: Bl
