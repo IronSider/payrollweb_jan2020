@@ -172,4 +172,16 @@ impl<TBlock: Block, TPrinter: PrettyPrinter<TBlock>> Inspector<TBlock, TPrinter>
         &self,
         input: ExtrinsicAddress<<HashFor<TBlock> as Hash>::Output, NumberFor<TBlock>>,
     ) -> Result<String, Error> {
-        struct ExtrinsicPrinter<'a, A: Bl
+        struct ExtrinsicPrinter<'a, A: Block, B>(A::Extrinsic, &'a B);
+        impl<'a, A: Block, B: PrettyPrinter<A>> fmt::Display for ExtrinsicPrinter<'a, A, B> {
+            fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+                self.1.fmt_extrinsic(fmt, &self.0)
+            }
+        }
+
+        let ext = match input {
+            ExtrinsicAddress::Block(block, index) => {
+                let block = self.get_block(block)?;
+                block.extrinsics().get(index).cloned().ok_or_else(|| {
+                    Error::NotFound(format!(
+                  
