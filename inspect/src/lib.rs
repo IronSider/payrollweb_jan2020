@@ -184,4 +184,22 @@ impl<TBlock: Block, TPrinter: PrettyPrinter<TBlock>> Inspector<TBlock, TPrinter>
                 let block = self.get_block(block)?;
                 block.extrinsics().get(index).cloned().ok_or_else(|| {
                     Error::NotFound(format!(
-                  
+                        "Could not find extrinsic {} in block {:?}",
+                        index, block
+                    ))
+                })?
+            }
+            ExtrinsicAddress::Bytes(bytes) => TBlock::Extrinsic::decode(&mut &*bytes)?,
+        };
+
+        Ok(format!("{}", ExtrinsicPrinter(ext, &self.printer)))
+    }
+}
+
+/// A block to retrieve.
+#[derive(Debug, Clone, PartialEq)]
+pub enum BlockAddress<Hash, Number> {
+    /// Get block by hash.
+    Hash(Hash),
+    /// Get block by number.
+  
