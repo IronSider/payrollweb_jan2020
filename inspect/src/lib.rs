@@ -222,4 +222,22 @@ impl<Hash: FromStr, Number: FromStr> FromStr for BlockAddress<Hash, Number> {
         }
 
         // then assume it's bytes (hex-encoded)
-        sp_core::bytes::from_hex(s).ma
+        sp_core::bytes::from_hex(s).map(Self::Bytes).map_err(|e| {
+            format!(
+				"Given string does not look like hash or number. It could not be parsed as bytes either: {}",
+				e
+			)
+        })
+    }
+}
+
+/// An extrinsic address to decode and print out.
+#[derive(Debug, Clone, PartialEq)]
+pub enum ExtrinsicAddress<Hash, Number> {
+    /// Extrinsic as part of existing block.
+    Block(BlockAddress<Hash, Number>, usize),
+    /// Raw SCALE-encoded extrinsic bytes.
+    Bytes(Vec<u8>),
+}
+
+impl<Hash: FromStr + Debug, Number: FromStr + De
