@@ -253,4 +253,26 @@ impl<Hash: FromStr + Debug, Number: FromStr + Debug> FromStr for ExtrinsicAddres
         let mut it = s.split(|c| c == '.' || c == ':' || c == ' ');
         let block = it
             .next()
-            .expect("First element of split iterator is never em
+            .expect("First element of split iterator is never empty; qed")
+            .parse()?;
+
+        let index = it
+            .next()
+            .ok_or("Extrinsic index missing: example \"5:0\"")?
+            .parse()
+            .map_err(|e| format!("Invalid index format: {}", e))?;
+
+        Ok(Self::Block(block, index))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use sp_core::hash::H160 as Hash;
+
+    #[test]
+    fn should_parse_block_strings() {
+        type BlockAddress = super::BlockAddress<Hash, u64>;
+
+        let b0 = BlockAddress::from_str("3BfC20f0B9aFcAcE800D73D21911
