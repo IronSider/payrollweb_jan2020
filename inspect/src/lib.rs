@@ -240,4 +240,17 @@ pub enum ExtrinsicAddress<Hash, Number> {
     Bytes(Vec<u8>),
 }
 
-impl<Hash: FromStr + Debug, Number: FromStr + De
+impl<Hash: FromStr + Debug, Number: FromStr + Debug> FromStr for ExtrinsicAddress<Hash, Number> {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // first try raw bytes
+        if let Ok(bytes) = sp_core::bytes::from_hex(s).map(Self::Bytes) {
+            return Ok(bytes);
+        }
+
+        // split by a bunch of different characters
+        let mut it = s.split(|c| c == '.' || c == ':' || c == ' ');
+        let block = it
+            .next()
+            .expect("First element of split iterator is never em
