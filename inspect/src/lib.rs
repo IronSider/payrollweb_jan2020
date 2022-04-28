@@ -275,4 +275,20 @@ mod tests {
     fn should_parse_block_strings() {
         type BlockAddress = super::BlockAddress<Hash, u64>;
 
-        let b0 = BlockAddress::from_str("3BfC20f0B9aFcAcE800D73D21911
+        let b0 = BlockAddress::from_str("3BfC20f0B9aFcAcE800D73D2191166FF16540258");
+        let b1 = BlockAddress::from_str("1234");
+        let b2 = BlockAddress::from_str("0");
+        let b3 = BlockAddress::from_str("0x0012345f");
+
+        assert_eq!(
+            b0,
+            Ok(BlockAddress::Hash(
+                "3BfC20f0B9aFcAcE800D73D2191166FF16540258".parse().unwrap()
+            ))
+        );
+        assert_eq!(b1, Ok(BlockAddress::Number(1234)));
+        assert_eq!(b2, Ok(BlockAddress::Number(0)));
+        assert_eq!(b3, Ok(BlockAddress::Bytes(vec![0, 0x12, 0x34, 0x5f])));
+    }
+
+    #[test]
