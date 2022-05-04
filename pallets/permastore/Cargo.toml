@@ -17,4 +17,12 @@ sp-runtime = { git = "https://github.com/paritytech/substrate", default-features
 sp-std = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
 
 frame-benchmarking = { git = "https://github.com/paritytech/substrate", default-features = false, optional = true , branch = "master" }
-frame-support = { git = "https://github.com/paritytech/substrate", default-features = false , br
+frame-support = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
+frame-system = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
+pallet-balances = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
+
+canyon-primitives = { path = "../../primitives/", default-features = false }
+cp-consensus-poa = { path = "../../primitives/consensus/poa", default-features = false }
+
+[dev-dependencies]
+sp-core = { git = "https://github.com/paritytech/substrate", default-features = fals
