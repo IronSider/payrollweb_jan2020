@@ -25,4 +25,23 @@ canyon-primitives = { path = "../../primitives/", default-features = false }
 cp-consensus-poa = { path = "../../primitives/consensus/poa", default-features = false }
 
 [dev-dependencies]
-sp-core = { git = "https://github.com/paritytech/substrate", default-features = fals
+sp-core = { git = "https://github.com/paritytech/substrate", default-features = false , branch = "master" }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"scale-info/std",
+	"serde",
+	"sp-io/std",
+	"sp-runtime/std",
+	"sp-std/std",
+	"frame-benchmarking/std",
+	"frame-support/std",
+	"frame-system/std",
+	"pallet-balances/std",
+	"canyon-primitives/std",
+	"cp-consensus-poa/std",
+]
+runtime-benchmarks = ["frame-benchmarking"]
+try-runtime = ["frame-support/try-runtime"]
