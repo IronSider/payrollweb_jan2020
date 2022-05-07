@@ -108,3 +108,298 @@ pub mod pallet {
 
     #[pallet::pallet]
     #[pallet::generate_store(pub(super) trait Store)]
+    pub struct Pallet<T>(_);
+
+    #[pallet::hooks]
+    impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
+        fn on_initialize(_n: BlockNumberFor<T>) -> Weight {
+            // Clear the block size of last block.
+            <BlockDataSize<T>>::kill();
+            1
+        }
+
+        fn on_finalize(n: BlockNumberFor<T>) {
+            if <BlockDataSize<T>>::get() > 0 {
+                let latest_weave_size = <WeaveSize<T>>::get();
+                <GlobalWeaveSizeIndex<T>>::append(latest_weave_size);
+                <GlobalBlockNumberIndex<T>>::append(n);
+            }
+        }
+    }
+
+    #[pallet::call]
+    impl<T: Config> Pallet<T> {
+        /// Stores the data permanently.
+        ///
+        /// The minimum data size is 1 bytes, the maximum is `MAX_DATA_SIZE`.
+        /// The digest of data will be recorded on chain, the actual data has
+        /// to be stored off-chain before executing this extrinsic.
+        #[pallet::weight(T::WeightInfo::store())]
+        pub fn store(origin: OriginFor<T>, data_size: u32, chunk_root: T::Hash) -> DispatchResult {
+            let sender = ensure_signed(origin)?;
+
+            ensure!(
+                data_size > 0 && data_size < T::MaxDataSize::get(),
+                Error::<T>::InvalidDataSize
+            );
+            ensure!(Self::stored_locally(&chunk_root), Error::<T>::NotStored);
+
+            // TODO: ensure the validity of stored data in the local DB?
+
+            let storage_fee = Self::charge_storage_fee(&sender, data_size)?;
+
+            let block_number = frame_system::Pallet::<T>::block_number();
+            let extrinsic_index = frame_system::Pallet::<T>::extrinsic_index().unwrap_or_default();
+
+            Orders::<T>::insert(&sender, (block_number, extrinsic_index), storage_fee);
+
+            // FIXME: store these info in db directly.
+            ChunkRootIndex::<T>::insert((block_number, extrinsic_index), chunk_root);
+            TransactionDataSize::<T>::insert((block_number, extrinsic_index), data_size);
+
+            <BlockDataSize<T>>::mutate(|s| *s += data_size as u64);
+            <WeaveSize<T>>::mutate(|s| *s += data_size as u64);
+
+            Self::deposit_event(Event::Stored(sender, chunk_root));
+
+            Ok(())
+        }
+
+        /// _Delete_ the data from the network by removing the incentive
+        /// to keep storing them.
+        ///
+        /// By the mean of forgetting a data, this piece of data will be
+        /// prevented from being selected as the random data source in the
+        /// PoA consensus.
+        #[pallet::weight(T::WeightInfo::forget())]
+        pub fn forget(
+            origin: OriginFor<T>,
+            block_number: T::BlockNumber,
+            extrinsic_index: ExtrinsicIndex,
+        ) -> DispatchResult {
+            let sender = ensure_signed(origin)?;
+
+            // Remove the order.
+            let _fee = Orders::<T>::take(&sender, (block_number, extrinsic_index))
+                .ok_or(Error::<T>::OrderDoesNotExist)?;
+
+            // refund the remaining fee.
+            Self::refund_storage_fee(&sender, block_number);
+
+            Self::deposit_event(Event::Forgot(block_number, extrinsic_index));
+
+            Ok(())
+        }
+    }
+
+    /// Event for the Permastore pallet.
+    #[pallet::event]
+    #[pallet::generate_deposit(pub(super) fn deposit_event)]
+    pub enum Event<T: Config> {
+        /// New storage order. [who, chunk_root]
+        Stored(T::AccountId, T::Hash),
+        /// The data has been forgotten. [block_number, extrinsic_index]
+        Forgot(T::BlockNumber, ExtrinsicIndex),
+    }
+
+    /// Error for the Permastore pallet.
+    #[pallet::error]
+    pub enum Error<T> {
+        /// The valid range of data size is (0, MAX_DATA_SIZE).
+        InvalidDataSize,
+        /// The transaction data has not been stored locally.
+        NotStored,
+        /// The storage order does not exist.
+        OrderDoesNotExist,
+    }
+
+    /// Map of all the storage orders.
+    #[pallet::storage]
+    #[pallet::getter(fn orders)]
+    pub(super) type Orders<T: Config> = StorageDoubleMap<
+        _,
+        Blake2_128Concat,
+        T::AccountId,
+        Twox64Concat,
+        (T::BlockNumber, ExtrinsicIndex),
+        BalanceOf<T>,
+    >;
+
+    /// Total byte size of data stored onto the network so far.
+    ///
+    /// In another word, it equals to the sum of [`BlockDataSize`]
+    /// of this block and [`WeaveSize`] of previous block.
+    #[pallet::storage]
+    pub(super) type WeaveSize<T: Config> = StorageValue<_, u64, ValueQuery>;
+
+    /// Total byte size of data stored during current block.
+    #[pallet::storage]
+    #[pallet::getter(fn block_data_size)]
+    pub(super) type BlockDataSize<T: Config> = StorageValue<_, u64, ValueQuery>;
+
+    /// (block_number, extrinsic_index) => Option<chunk_root>
+    #[pallet::storage]
+    #[pallet::getter(fn chunk_root_index)]
+    pub(super) type ChunkRootIndex<T: Config> =
+        StorageMap<_, Twox64Concat, (T::BlockNumber, ExtrinsicIndex), T::Hash>;
+
+    /// (block_number, extrinsic_index) => transaction_data_size
+    #[pallet::storage]
+    #[pallet::getter(fn transaction_data_size)]
+    pub(super) type TransactionDataSize<T: Config> =
+        StorageMap<_, Twox64Concat, (T::BlockNumber, ExtrinsicIndex), u32, ValueQuery>;
+
+    /// FIXME: find a proper way to store these info.
+    ///
+    /// Temp solution for locating the recall block. An ever increasing array of global weave size.
+    #[pallet::storage]
+    #[pallet::getter(fn global_block_size_index)]
+    pub(super) type GlobalWeaveSizeIndex<T: Config> = StorageValue<_, Vec<u64>, ValueQuery>;
+
+    /// Temp solution for locating the recall block.
+    #[pallet::storage]
+    #[pallet::getter(fn global_block_number_index)]
+    pub(super) type GlobalBlockNumberIndex<T: Config> =
+        StorageValue<_, Vec<T::BlockNumber>, ValueQuery>;
+}
+
+impl<T: Config> Pallet<T> {
+    /// Returns the chunk root given `block_number` and `extrinsic_index`.
+    pub fn chunk_root(block_number: T::BlockNumber, extrinsic_index: u32) -> Option<T::Hash> {
+        <ChunkRootIndex<T>>::get((block_number, extrinsic_index))
+    }
+
+    /// Returns the block number in which the recall byte is included.
+    pub fn find_recall_block(recall_byte: u64) -> Option<T::BlockNumber> {
+        frame_support::log::debug!(
+            target: "runtime::permastore",
+            "Global weave size list: {:?}",
+            <GlobalBlockNumberIndex<T>>::get()
+                .iter()
+                .zip(<GlobalWeaveSizeIndex<T>>::get().iter())
+                .collect::<Vec<_>>()
+        );
+        let weave_size_list = <GlobalWeaveSizeIndex<T>>::get();
+
+        let recall_block_number_index =
+            match weave_size_list.binary_search_by_key(&recall_byte, |&weave_size| weave_size) {
+                Ok(i) => i,
+                Err(i) => i,
+            };
+
+        <GlobalBlockNumberIndex<T>>::get()
+            .get(recall_block_number_index)
+            .copied()
+    }
+
+    /// Returns the data size of transaction given `block_number` and `extrinsic_index`.
+    pub fn data_size(block_number: T::BlockNumber, extrinsic_index: u32) -> u32 {
+        <TransactionDataSize<T>>::get((block_number, extrinsic_index))
+    }
+
+    /// Returns true if poa proof should be included and verified.
+    pub fn require_proof_of_access() -> bool {
+        <BlockDataSize<T>>::get() > 0 || <WeaveSize<T>>::get() > 0
+    }
+
+    /// Returns the data size of current block.
+    pub fn block_size() -> u64 {
+        <BlockDataSize<T>>::get()
+    }
+
+    /// Returns the total byte size of weave.
+    pub fn weave_size() -> u64 {
+        <WeaveSize<T>>::get()
+    }
+
+    // TODO: ensure the transaction data has been indeed stored in the local DB.
+    fn stored_locally(_chunk_root: &T::Hash) -> bool {
+        true
+    }
+
+    // TODO: calculate the perpetual storage cost based on the data size.
+    fn calculate_storage_fee(data_size: u32) -> BalanceOf<T> {
+        data_size.saturated_into()
+    }
+
+    /// Charges the perpetual storage fee.
+    ///
+    /// TODO: Currently all the fee is simply transfered to the treasury,
+    /// we might want a new destination for that.
+    fn charge_storage_fee(
+        who: &T::AccountId,
+        data_size: u32,
+    ) -> Result<BalanceOf<T>, sp_runtime::DispatchError> {
+        let fee = Self::calculate_storage_fee(data_size);
+        let treasury_account: T::AccountId = T::TreasuryPalletId::get().into_account();
+        T::Currency::transfer(who, &treasury_account, fee, ExistenceRequirement::KeepAlive)?;
+        Ok(fee)
+    }
+
+    fn refund_storage_fee(_who: &T::AccountId, _created_at: T::BlockNumber) {}
+}
+
+/// A signed extension that checks for the `store` call.
+///
+/// It ensures the transaction data has been stored locally.
+#[derive(Encode, Decode, Clone, Eq, PartialEq, TypeInfo)]
+#[scale_info(skip_type_params(T))]
+pub struct CheckStore<T: Config + Send + Sync>(PhantomData<T>);
+
+impl<T: Config + Send + Sync> sp_std::fmt::Debug for CheckStore<T> {
+    fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
+        write!(f, "CheckStore")
+    }
+}
+
+impl<T: Config + Send + Sync> SignedExtension for CheckStore<T>
+where
+    <T as frame_system::Config>::Call: IsSubType<Call<T>>,
+{
+    const IDENTIFIER: &'static str = "CheckStore";
+    type AccountId = T::AccountId;
+    type Call = <T as frame_system::Config>::Call;
+    // TODO: Sign the chunk root
+    type AdditionalSigned = ();
+    type Pre = ();
+
+    fn additional_signed(&self) -> sp_std::result::Result<(), TransactionValidityError> {
+        Ok(())
+    }
+
+    fn validate(
+        &self,
+        who: &Self::AccountId,
+        call: &Self::Call,
+        _info: &DispatchInfoOf<Self::Call>,
+        _len: usize,
+    ) -> TransactionValidity {
+        if let Some(Call::store {
+            data_size,
+            chunk_root,
+            ..
+        }) = call.is_sub_type()
+        {
+            // TODO:
+            //
+            // 1. Check the balance is enough to pay the storage fee according to the data size.
+            //
+            // 2. Check if the data has been stored locally.
+            //
+            // 3. Adjust the transaction priority according to the data size.
+
+            ensure!(
+                T::Currency::free_balance(who) >= Pallet::<T>::calculate_storage_fee(*data_size),
+                InvalidTransaction::Payment
+            );
+
+            const DATA_NOT_STORED: u8 = 100;
+            ensure!(
+                Pallet::<T>::stored_locally(chunk_root),
+                InvalidTransaction::Custom(DATA_NOT_STORED)
+            );
+        }
+
+        Ok(Default::default())
+    }
+}
