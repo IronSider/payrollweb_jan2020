@@ -28,4 +28,18 @@ use sp_runtime::{
     BuildStorage,
 };
 // Reexport crate as its pallet name for construct_runtime.
-use crate as pallet_permast
+use crate as pallet_permastore;
+
+type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
+type Block = frame_system::mocking::MockBlock<Test>;
+
+// For testing the pallet, we construct a mock runtime.
+frame_support::construct_runtime!(
+    pub enum Test where
+        Block = Block,
+        NodeBlock = Block,
+        UncheckedExtrinsic = UncheckedExtrinsic,
+    {
+        System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
+        Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
+        Permastore: pallet_permastor
