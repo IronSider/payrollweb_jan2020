@@ -77,4 +77,20 @@ impl frame_system::Config for Test {
     type OnSetCode = ();
 }
 parameter_types! {
-    pub c
+    pub const ExistentialDeposit: u64 = 1;
+    pub const MaxLocks: u32 = 50;
+    pub const MaxReserves: u32 = 50;
+}
+impl pallet_balances::Config for Test {
+    type MaxLocks = MaxLocks;
+    type MaxReserves = MaxReserves;
+    type ReserveIdentifier = [u8; 8];
+    type Balance = u64;
+    type DustRemoval = ();
+    type Event = Event;
+    type ExistentialDeposit = ExistentialDeposit;
+    type AccountStore = System;
+    type WeightInfo = ();
+}
+parameter_types! {
+    pub const TreasuryPalletId: PalletId = Pal
