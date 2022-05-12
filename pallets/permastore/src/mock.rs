@@ -108,4 +108,11 @@ impl Config for Test {
 // our desired mockup.
 pub fn new_test_ext() -> sp_io::TestExternalities {
     let t = GenesisConfig {
-        // We use default for brevity, but you can configure as desired if nee
+        // We use default for brevity, but you can configure as desired if needed.
+        system: Default::default(),
+        balances: Default::default(),
+    }
+    .build_storage()
+    .unwrap();
+    t.into()
+}
