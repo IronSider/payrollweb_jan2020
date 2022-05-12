@@ -93,4 +93,19 @@ impl pallet_balances::Config for Test {
     type WeightInfo = ();
 }
 parameter_types! {
-    pub const TreasuryPalletId: PalletId = Pal
+    pub const TreasuryPalletId: PalletId = PalletId(*b"py/trsry");
+    pub const MaxDataSize: u32 = 1024 * 1024 * 1024;
+}
+impl Config for Test {
+    type Event = Event;
+    type Currency = Balances;
+    type TreasuryPalletId = TreasuryPalletId;
+    type MaxDataSize = MaxDataSize;
+    type WeightInfo = ();
+}
+
+// This function basically just builds a genesis storage key/value store according to
+// our desired mockup.
+pub fn new_test_ext() -> sp_io::TestExternalities {
+    let t = GenesisConfig {
+        // We use default for brevity, but you can configure as desired if nee
