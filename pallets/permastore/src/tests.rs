@@ -8,4 +8,21 @@
 // by the Free Software Foundation, either version 3 of the License,
 // or (at your option) any later version.
 //
-// Canyon is distributed in the h
+// Canyon is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Canyon. If not, see <http://www.gnu.org/licenses/>.
+
+use frame_support::traits::OnFinalize;
+
+use crate::{
+    mock::{new_test_ext, Permastore, Test},
+    *,
+};
+
+#[test]
+fn find_recall_block_should_work() {
+    new_t
