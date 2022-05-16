@@ -45,4 +45,11 @@ fn find_recall_block_should_work() {
 
         // [5, 12, 22]
         // [1, 4, 10]
-        <Permastore a
+        <Permastore as OnFinalize<u64>>::on_finalize(10);
+
+        assert_eq!(Pallet::<Test>::find_recall_block(3), Some(1));
+        assert_eq!(Pallet::<Test>::find_recall_block(12), Some(4));
+        assert_eq!(Pallet::<Test>::find_recall_block(13), Some(10));
+        assert_eq!(Pallet::<Test>::find_recall_block(15), Some(10));
+    });
+}
