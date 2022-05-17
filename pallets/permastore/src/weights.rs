@@ -68,4 +68,17 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
     fn store() -> Weight {
         (64_430_000 as Weight)
             .saturating_add(T::DbWeight::get().reads(3 as Weight))
-  
+            .saturating_add(T::DbWeight::get().writes(5 as Weight))
+    }
+    // Storage: Permastore Orders (r:1 w:1)
+    fn forget() -> Weight {
+        (24_665_000 as Weight)
+            .saturating_add(T::DbWeight::get().reads(1 as Weight))
+            .saturating_add(T::DbWeight::get().writes(1 as Weight))
+    }
+}
+
+// For backwards compatibility and tests
+impl WeightInfo for () {
+    // Storage: Permastore ChunkRootIndex (r:0 w:1)
+    // Storage: Permastore Orders 
