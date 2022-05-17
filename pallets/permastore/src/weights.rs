@@ -81,4 +81,15 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 // For backwards compatibility and tests
 impl WeightInfo for () {
     // Storage: Permastore ChunkRootIndex (r:0 w:1)
-    // Storage: Permastore Orders 
+    // Storage: Permastore Orders (r:0 w:1)
+    // Storage: unknown [0x3a65787472696e7369635f696e646578] (r:1 w:0)
+    // Storage: Permastore BlockDataSize (r:1 w:1)
+    // Storage: Permastore WeaveSize (r:1 w:1)
+    // Storage: Permastore TransactionDataSize (r:0 w:1)
+    fn store() -> Weight {
+        (64_430_000 as Weight)
+            .saturating_add(RocksDbWeight::get().reads(3 as Weight))
+            .saturating_add(RocksDbWeight::get().writes(5 as Weight))
+    }
+    // Storage: Permastore Orders (r:1 w:1)
+    fn forget() -> Weig
