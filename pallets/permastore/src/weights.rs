@@ -37,4 +37,25 @@
 // --heap-pages=4096
 // --repeat
 // 20
-// --template=./scripts/pallet-wei
+// --template=./scripts/pallet-weights-template.hbs
+// --output=./pallets/permastore/src/weights.rs
+
+#![allow(clippy::all)]
+#![allow(unused_parens)]
+#![allow(unused_imports)]
+
+use frame_support::{
+    traits::Get,
+    weights::{constants::RocksDbWeight, Weight},
+};
+use sp_std::marker::PhantomData;
+
+/// Weight functions needed for pallet_permastore.
+pub trait WeightInfo {
+    fn store() -> Weight;
+    fn forget() -> Weight;
+}
+
+/// Weights for pallet_permastore using the Substrate node and recommended hardware.
+pub struct SubstrateWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config
