@@ -92,4 +92,9 @@ impl WeightInfo for () {
             .saturating_add(RocksDbWeight::get().writes(5 as Weight))
     }
     // Storage: Permastore Orders (r:1 w:1)
-    fn forget() -> Weig
+    fn forget() -> Weight {
+        (24_665_000 as Weight)
+            .saturating_add(RocksDbWeight::get().reads(1 as Weight))
+            .saturating_add(RocksDbWeight::get().writes(1 as Weight))
+    }
+}
