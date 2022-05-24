@@ -42,4 +42,17 @@ benchmarks! {
         let proof = vec![vec![66, 0, 128, 180, 130, 227, 5, 251, 16, 249, 197, 243, 141, 167, 120, 84, 226, 47, 93, 191, 61, 61, 139, 214, 144, 4, 221, 111, 249, 57, 4, 88, 83, 133, 227]];
         let chunk_proof = ChunkProof::new(proof, chunk, chunk_index);
 
-        let tx_proof = vec![vec![129, 0, 17, 0, 0, 128, 191, 23
+        let tx_proof = vec![vec![129, 0, 17, 0, 0, 128, 191, 236, 85, 168, 163, 63, 16, 240, 207, 104, 174, 210, 70, 212, 151, 198, 14, 105, 220, 35, 135, 214, 71, 225, 65, 94, 149, 78, 123, 147, 77, 21], vec![64, 0]];
+
+        let poa = ProofOfAccess::new(1, tx_proof, chunk_proof);
+        let poa_outcome = PoaOutcome::Justification(poa);
+    }: deposit (RawOrigin::None, poa_outcome)
+    verify {
+        // TODO: verify deposit
+    }
+
+    set_config {
+        let new = PoaConfiguration {
+            max_depth: 1u32,
+            max_tx_path: 100u32,
+            max_chunk_path: 100
