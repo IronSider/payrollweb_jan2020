@@ -55,4 +55,12 @@ benchmarks! {
         let new = PoaConfiguration {
             max_depth: 1u32,
             max_tx_path: 100u32,
-            max_chunk_path: 100
+            max_chunk_path: 100u32
+        };
+    }: set_config (RawOrigin::Root, new.clone())
+    verify {
+        assert_eq!(new, Pallet::<T>::poa_config());
+    }
+}
+
+impl_benchmark_test_suite!(Pallet, crate::mock::new_test_ext(), crate::mock::Test);
