@@ -285,3 +285,52 @@ pub mod pallet {
 
     /// Error for the poa pallet.
     #[pallet::error]
+    pub enum Error<T> {
+        /// Invalid inherent data of `[ProofOfAccess]`
+        InvalidProofOfAccess,
+        /// The poa configuration failed the sanity checks.
+        InvalidPoaConfiguration,
+    }
+
+    /// Poa Configuration.
+    #[pallet::storage]
+    #[pallet::getter(fn poa_config)]
+    pub type PoaConfig<T: Config> = StorageValue<_, PoaConfiguration, ValueQuery>;
+
+    /// Historical depth info for each validator.
+    ///
+    /// The probabilistic estimate of the proportion of each
+    /// validator's local storage to the entire network storage.
+    ///
+    /// Indicated by the average depth of poa generation of a validator.
+    /// The smaller the depth, the greater the storage capacity.
+    #[pallet::storage]
+    #[pallet::getter(fn history_depth)]
+    pub type HistoryDepth<T: Config> =
+        StorageMap<_, Blake2_128Concat, T::AccountId, DepthInfo<T::BlockNumber>>;
+
+    /// Helper storage item of current block author for easier testing.
+    #[cfg(test)]
+    #[pallet::storage]
+    pub(super) type TestAuthor<T: Config> = StorageValue<_, T::AccountId, ValueQuery>;
+
+    impl<T: Config> Pallet<T> {
+        /// Updates the historical depth info of block author.
+        pub(crate) fn note_depth(depth: Depth) {
+            let block_author = T::BlockAuthor::author();
+
+            if let Some(mut old) = HistoryDepth::<T>::get(&block_author) {
+                old.add_depth(depth);
+                HistoryDepth::<T>::insert(&block_author, old);
+            } else {
+                HistoryDepth::<T>::insert(
+                    &block_author,
+                    DepthInfo {
+                        blocks: 1u32.into(),
+                        total_depth: depth,
+                    },
+                );
+            }
+        }
+    }
+}
