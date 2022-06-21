@@ -38,4 +38,20 @@ frame_support::construct_runtime!(
     pub enum Test where
         Block = Block,
         NodeBlock = Block,
-        UncheckedExtrinsic = UncheckedE
+        UncheckedExtrinsic = UncheckedExtrinsic,
+    {
+        System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
+        Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
+        Poa: pallet_poa::{Pallet, Call, Storage, Event<T>},
+    }
+);
+
+parameter_types! {
+    pub const BlockHashCount: u64 = 250;
+    pub BlockWeights: frame_system::limits::BlockWeights =
+        frame_system::limits::BlockWeights::simple_max(1024);
+}
+impl frame_system::Config for Test {
+    type BaseCallFilter = Everything;
+    type BlockWeights = ();
+    type B
