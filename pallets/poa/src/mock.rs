@@ -54,4 +54,20 @@ parameter_types! {
 impl frame_system::Config for Test {
     type BaseCallFilter = Everything;
     type BlockWeights = ();
-    type B
+    type BlockLength = ();
+    type DbWeight = ();
+    type Origin = Origin;
+    type Index = u64;
+    type BlockNumber = u64;
+    type Hash = H256;
+    type Call = Call;
+    type Hashing = BlakeTwo256;
+    type AccountId = u64;
+    type Lookup = IdentityLookup<Self::AccountId>;
+    type Header = Header;
+    type Event = Event;
+    type BlockHashCount = BlockHashCount;
+    type Version = ();
+    type PalletInfo = PalletInfo;
+    type AccountData = pallet_balances::AccountData<u64>;
+    type OnNewAccount =
