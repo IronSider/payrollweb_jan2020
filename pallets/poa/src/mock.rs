@@ -90,4 +90,25 @@ impl pallet_balances::Config for Test {
     type Balance = u64;
     type DustRemoval = ();
     type Event = Event;
-    type Exist
+    type ExistentialDeposit = ExistentialDeposit;
+    type AccountStore = System;
+    type WeightInfo = ();
+}
+
+impl BlockAuthor<u64> for Test {
+    fn author() -> u64 {
+        TestAuthor::<Test>::get()
+    }
+}
+
+impl Config for Test {
+    type Event = Event;
+    type BlockAuthor = Self;
+    type WeightInfo = ();
+}
+
+// This function basically just builds a genesis storage key/value store according to
+// our desired mockup.
+pub fn new_test_ext() -> sp_io::TestExternalities {
+    let t = GenesisConfig {
+        // We use default for brevity, but you can configur
