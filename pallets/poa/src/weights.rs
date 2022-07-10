@@ -34,4 +34,26 @@
 // --extrinsic
 // *
 // --steps=50
-// --heap-pag
+// --heap-pages=4096
+// --repeat
+// 20
+// --template=./scripts/pallet-weights-template.hbs
+// --output=./pallets/poa/src/weights.rs
+
+#![allow(clippy::all)]
+#![allow(unused_parens)]
+#![allow(unused_imports)]
+
+use frame_support::{
+    traits::Get,
+    weights::{constants::RocksDbWeight, Weight},
+};
+use sp_std::marker::PhantomData;
+
+/// Weight functions needed for pallet_poa.
+pub trait WeightInfo {
+    fn deposit() -> Weight;
+    fn set_config() -> Weight;
+}
+
+/// Weights for pallet_poa using the Substrate node and recommended 
