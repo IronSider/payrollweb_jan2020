@@ -56,4 +56,16 @@ pub trait WeightInfo {
     fn set_config() -> Weight;
 }
 
-/// Weights for pallet_poa using the Substrate node and recommended 
+/// Weights for pallet_poa using the Substrate node and recommended hardware.
+pub struct SubstrateWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
+    // Storage: Poa HistoryDepth (r:1 w:1)
+    // Storage: Poa PoaConfig (r:1 w:0)
+    // Storage: System Digest (r:1 w:1)
+    // Storage: Authorship Author (r:1 w:0)
+    fn deposit() -> Weight {
+        (563_445_000 as Weight)
+            .saturating_add(T::DbWeight::get().reads(4 as Weight))
+            .saturating_add(T::DbWeight::get().writes(2 as Weight))
+    }
+    // Storage: Poa 
