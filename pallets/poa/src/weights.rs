@@ -68,4 +68,19 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
             .saturating_add(T::DbWeight::get().reads(4 as Weight))
             .saturating_add(T::DbWeight::get().writes(2 as Weight))
     }
-    // Storage: Poa 
+    // Storage: Poa PoaConfig (r:0 w:1)
+    fn set_config() -> Weight {
+        (16_173_000 as Weight).saturating_add(T::DbWeight::get().writes(1 as Weight))
+    }
+}
+
+// For backwards compatibility and tests
+impl WeightInfo for () {
+    // Storage: Poa HistoryDepth (r:1 w:1)
+    // Storage: Poa PoaConfig (r:1 w:0)
+    // Storage: System Digest (r:1 w:1)
+    // Storage: Authorship Author (r:1 w:0)
+    fn deposit() -> Weight {
+        (563_445_000 as Weight)
+            .saturating_add(RocksDbWeight::get().reads(4 as Weight))
+            .s
