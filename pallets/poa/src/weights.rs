@@ -83,4 +83,10 @@ impl WeightInfo for () {
     fn deposit() -> Weight {
         (563_445_000 as Weight)
             .saturating_add(RocksDbWeight::get().reads(4 as Weight))
-            .s
+            .saturating_add(RocksDbWeight::get().writes(2 as Weight))
+    }
+    // Storage: Poa PoaConfig (r:0 w:1)
+    fn set_config() -> Weight {
+        (16_173_000 as Weight).saturating_add(RocksDbWeight::get().writes(1 as Weight))
+    }
+}
