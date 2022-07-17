@@ -1,0 +1,8 @@
+[package]
+name = "cp-consensus-poa"
+version = "0.1.0"
+authors = ["Canyon Labs <https://github.com/canyon-network>"]
+edition = "2018"
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "2.3", default-feature
