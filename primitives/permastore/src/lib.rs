@@ -33,4 +33,17 @@ pub type Hasher = sp_core::Blake2Hasher;
 pub type TrieLayout = sp_trie::Layout<Hasher>;
 
 /// Error type of chunk proof verification.
-p
+pub type VerifyError = sp_trie::VerifyError<sp_core::H256, sp_trie::Error>;
+
+/// Low level APIs for manipulating the persistent transaction data storage.
+/// No data validation performed.
+pub trait PermaStorage: Send + Sync {
+    /// Persist a value in storage under given key.
+    fn submit(&mut self, key: &[u8], value: &[u8]);
+
+    /// Remove the value under given key.
+    fn remove(&mut self, key: &[u8]);
+
+    /// Retrieve a value from storage under given key.
+    fn retrieve(&self, key: &[u8]) -> Option<Vec<u8>>;
+
