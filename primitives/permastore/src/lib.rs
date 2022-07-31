@@ -47,3 +47,18 @@ pub trait PermaStorage: Send + Sync {
     /// Retrieve a value from storage under given key.
     fn retrieve(&self, key: &[u8]) -> Option<Vec<u8>>;
 
+    /// Checks if the storage exists under given key.
+    fn exists(&self, key: &[u8]) -> bool {
+        self.retrieve(key).is_some()
+    }
+}
+
+sp_api::decl_runtime_apis! {
+    /// The permastore API.
+    pub trait PermastoreApi<BlockNumber, ExtrinsicIndex, Hash> where
+        BlockNumber: codec::Codec,
+        ExtrinsicIndex: codec::Codec,
+        Hash: codec::Codec,
+    {
+        /// Returns the chunk root given `block_number` and `extrinsic_index`.
+        fn chunk_root(block_number: BlockNumber, extrinsic_index: ExtrinsicIndex) -> O
