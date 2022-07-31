@@ -13,4 +13,24 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
-// You should have received
+// You should have received a copy of the GNU General Public License
+// along with Canyon. If not, see <http://www.gnu.org/licenses/>.
+
+#![cfg_attr(not(feature = "std"), no_std)]
+#![allow(clippy::too_many_arguments)]
+
+use sp_std::vec::Vec;
+
+/// 256B per chunk.
+pub const CHUNK_SIZE: u32 = 256 * 1024;
+
+/// Hasher type for permastore.
+#[cfg(feature = "std")]
+pub type Hasher = sp_core::Blake2Hasher;
+
+/// Trie layout used for permastore.
+#[cfg(feature = "std")]
+pub type TrieLayout = sp_trie::Layout<Hasher>;
+
+/// Error type of chunk proof verification.
+p
