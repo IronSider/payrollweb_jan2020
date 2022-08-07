@@ -61,4 +61,16 @@ sp_api::decl_runtime_apis! {
         Hash: codec::Codec,
     {
         /// Returns the chunk root given `block_number` and `extrinsic_index`.
-        fn chunk_root(block_number: BlockNumber, extrinsic_index: ExtrinsicIndex) -> O
+        fn chunk_root(block_number: BlockNumber, extrinsic_index: ExtrinsicIndex) -> Option<Hash>;
+
+        /// Returns the number of block in which the recall byte is included.
+        fn find_recall_block(recall_byte: u64) -> Option<BlockNumber>;
+
+        /// Returns the size of transaction data given `block_number` and `extrinsic_index`.
+        fn data_size(block_number: BlockNumber, extrinsic_index: ExtrinsicIndex) -> u32;
+
+        /// Returns `true` if the proof of access is required for the block.
+        fn require_proof_of_access() -> bool;
+
+        /// Returns the size of current block.
+ 
