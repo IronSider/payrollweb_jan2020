@@ -35,3 +35,21 @@ pub type Signature = MultiSignature;
 
 /// Some way of identifying an account on the chain. We intentionally make it equivalent
 /// to the public key of our transaction signing scheme.
+pub type AccountId = <<Signature as Verify>::Signer as IdentifyAccount>::AccountId;
+
+/// The type for looking up accounts. We don't expect more than 4 billion of them.
+pub type AccountIndex = u32;
+
+/// Number of the attempts of PoA generation.
+pub type Depth = u32;
+
+/// The type for indexing the perma storage. The upper limit is around 16 EiB.
+pub type DataIndex = u64;
+
+/// Type used for extrinsic.
+pub type ExtrinsicIndex = u32;
+
+/// Balance of an account.
+pub type Balance = u128;
+
+/// Type used for expressing timest
