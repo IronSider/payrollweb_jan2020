@@ -86,4 +86,20 @@ pub mod report {
     use frame_system::offchain::AppCrypto;
     use sp_core::crypto::{key_types, KeyTypeId};
 
-    /// Key type for the reporting mo
+    /// Key type for the reporting module. Used for reporting BABE and GRANDPA
+    /// equivocations.
+    pub const KEY_TYPE: KeyTypeId = key_types::REPORTING;
+
+    mod app {
+        use sp_application_crypto::{app_crypto, sr25519};
+        app_crypto!(sr25519, super::KEY_TYPE);
+    }
+
+    /// Identity of the equivocation/misbehavior reporter.
+    pub type ReporterId = app::Public;
+
+    /// An `AppCrypto` type to allow submitting signed transactions using the reporting
+    /// application key as signer.
+    pub struct ReporterAppCrypto;
+
+ 
