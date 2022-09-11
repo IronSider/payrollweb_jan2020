@@ -102,4 +102,9 @@ pub mod report {
     /// application key as signer.
     pub struct ReporterAppCrypto;
 
- 
+    impl AppCrypto<<Signature as Verify>::Signer, Signature> for ReporterAppCrypto {
+        type RuntimeAppPublic = ReporterId;
+        type GenericSignature = sp_core::sr25519::Signature;
+        type GenericPublic = sp_core::sr25519::Public;
+    }
+}

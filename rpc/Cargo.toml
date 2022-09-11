@@ -1,0 +1,10 @@
+[package]
+name = "canyon-rpc"
+version = "0.1.0"
+authors = ["Canyon Labs <https://github.com/canyon-network>"]
+edition = "2018"
+license = "GPL-3.0"
+homepage = "https://canyon-network.io"
+repository = "https://github.com/canyon-network/canyon/"
+
+[package.metadata.
