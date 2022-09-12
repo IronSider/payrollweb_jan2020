@@ -18,4 +18,9 @@ sc-client-api = { git = "https://github.com/paritytech/substrate", branch = "mas
 sc-consensus-babe = { git = "https://github.com/paritytech/substrate", branch = "master" }
 sc-consensus-babe-rpc = { git = "https://github.com/paritytech/substrate", branch = "master" }
 sc-consensus-epochs = { git = "https://github.com/paritytech/substrate", branch = "master" }
-sc-chain-spec 
+sc-chain-spec = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-finality-grandpa = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-finality-grandpa-rpc = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-keystore = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-rpc = { git = "https://github.com/paritytech/substrate", branch = "master" }
+sc-rpc-api = { git = "https://github.com/paritytech/substrate", branc
