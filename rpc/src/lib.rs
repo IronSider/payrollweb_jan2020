@@ -26,4 +26,20 @@
 //!
 //! The RPCs available in this crate however can make some assumptions
 //! about how the runtime is constructed and what FRAME pallets
-//! are part of it. Theref
+//! are part of it. Therefore all node-runtime-specific RPCs can
+//! be placed here or imported from corresponding FRAME RPC definitions.
+
+#![warn(missing_docs)]
+
+use std::sync::Arc;
+
+use sc_client_api::AuxStore;
+use sc_consensus_babe::{Config, Epoch};
+use sc_consensus_babe_rpc::BabeRpcHandler;
+use sc_consensus_epochs::SharedEpochChanges;
+use sc_finality_grandpa::{
+    FinalityProofProvider, GrandpaJustificationStream, SharedAuthoritySet, SharedVoterState,
+};
+use sc_finality_grandpa_rpc::GrandpaRpcHandler;
+use sc_rpc::SubscriptionTaskExecutor;
+pub use sc_rpc_api::D
