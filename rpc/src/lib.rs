@@ -16,4 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Canyon. If not, see <http://www.gnu.org/licenses/>.
 
-//! A collecti
+//! A collection of canyon-specific RPC methods.
+//!
+//! Since `substrate` core functionality makes no assumptions
+//! about the modules used inside the runtime, so do
+//! RPC methods defined in `sc-rpc` crate.
+//! It means that `client/rpc` can't have any methods that
+//! need some strong assumptions about the particular runtime.
+//!
+//! The RPCs available in this crate however can make some assumptions
+//! about how the runtime is constructed and what FRAME pallets
+//! are part of it. Theref
