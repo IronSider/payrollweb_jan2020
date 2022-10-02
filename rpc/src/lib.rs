@@ -72,4 +72,17 @@ pub struct BabeDeps {
     /// BABE pending epoch changes.
     pub shared_epoch_changes: SharedEpochChanges<Block, Epoch>,
     /// The keystore that manages the keys of the node.
-    pub keystore: SyncCryptoStor
+    pub keystore: SyncCryptoStorePtr,
+}
+
+/// Extra dependencies for GRANDPA
+pub struct GrandpaDeps<B> {
+    /// Voting round info.
+    pub shared_voter_state: SharedVoterState,
+    /// Authority set info.
+    pub shared_authority_set: SharedAuthoritySet<Hash, BlockNumber>,
+    /// Receives notifications about justification events from Grandpa.
+    pub justification_stream: GrandpaJustificationStream<Block>,
+    /// Executor to drive the subscription manager in the Grandpa RPC handler.
+    pub subscription_executor: SubscriptionTaskExecutor,
+ 
