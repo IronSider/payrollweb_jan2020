@@ -57,4 +57,19 @@ use canyon_primitives::{AccountId, Balance, Block, BlockNumber, Hash, Index};
 pub struct LightDeps<C, F, P> {
     /// The client instance to use.
     pub client: Arc<C>,
-    ///
+    /// Transaction pool instance.
+    pub pool: Arc<P>,
+    /// Remote access to the blockchain (async).
+    pub remote_blockchain: Arc<dyn sc_client_api::light::RemoteBlockchain<Block>>,
+    /// Fetcher instance.
+    pub fetcher: Arc<F>,
+}
+
+/// Extra dependencies for BABE.
+pub struct BabeDeps {
+    /// BABE protocol config.
+    pub babe_config: Config,
+    /// BABE pending epoch changes.
+    pub shared_epoch_changes: SharedEpochChanges<Block, Epoch>,
+    /// The keystore that manages the keys of the node.
+    pub keystore: SyncCryptoStor
