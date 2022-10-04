@@ -85,4 +85,21 @@ pub struct GrandpaDeps<B> {
     pub justification_stream: GrandpaJustificationStream<Block>,
     /// Executor to drive the subscription manager in the Grandpa RPC handler.
     pub subscription_executor: SubscriptionTaskExecutor,
- 
+    /// Finality proof provider.
+    pub finality_provider: Arc<FinalityProofProvider<B, Block>>,
+}
+
+/// Full client dependencies.
+pub struct FullDeps<C, P, SC, B, S> {
+    /// The client instance to use.
+    pub client: Arc<C>,
+    /// Transaction pool instance.
+    pub pool: Arc<P>,
+    /// The SelectChain Strategy
+    pub select_chain: SC,
+    /// A copy of the chain spec.
+    pub chain_spec: Box<dyn sc_chain_spec::ChainSpec>,
+    /// Whether to deny unsafe calls
+    pub deny_unsafe: DenyUnsafe,
+    /// BABE specific dependencies.
+    pub babe: Ba
