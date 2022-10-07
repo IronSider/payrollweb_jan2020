@@ -102,4 +102,20 @@ pub struct FullDeps<C, P, SC, B, S> {
     /// Whether to deny unsafe calls
     pub deny_unsafe: DenyUnsafe,
     /// BABE specific dependencies.
-    pub babe: Ba
+    pub babe: BabeDeps,
+    /// GRANDPA specific dependencies.
+    pub grandpa: GrandpaDeps<B>,
+    /// permanent storage
+    pub perma_storage: S,
+}
+
+/// A IO handler that uses all Full RPC extensions.
+pub type IoHandler = jsonrpc_core::IoHandler<sc_rpc::Metadata>;
+
+/// Instantiate all Full RPC extensions.
+pub fn create_full<C, P, SC, B, S, A>(
+    deps: FullDeps<C, P, SC, B, S>,
+    author: A,
+) -> Result<jsonrpc_core::IoHandler<sc_rpc_api::Metadata>, Box<dyn std::error::Error + Send + Sync>>
+where
+    C: ProvideRuntimeApi<B
