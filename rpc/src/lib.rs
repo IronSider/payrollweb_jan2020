@@ -118,4 +118,16 @@ pub fn create_full<C, P, SC, B, S, A>(
     author: A,
 ) -> Result<jsonrpc_core::IoHandler<sc_rpc_api::Metadata>, Box<dyn std::error::Error + Send + Sync>>
 where
-    C: ProvideRuntimeApi<B
+    C: ProvideRuntimeApi<Block>
+        + HeaderBackend<Block>
+        + AuxStore
+        + HeaderMetadata<Block, Error = BlockChainError>
+        + Sync
+        + Send
+        + 'static,
+    C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>,
+    C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
+    C::Api: BabeApi<Block>,
+    C::Api: BlockBuilder<Block>,
+    P: TransactionPool + 'static,
+    <P as TransactionPool>
