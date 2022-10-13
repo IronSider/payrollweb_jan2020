@@ -130,4 +130,15 @@ where
     C::Api: BabeApi<Block>,
     C::Api: BlockBuilder<Block>,
     P: TransactionPool + 'static,
-    <P as TransactionPool>
+    <P as TransactionPool>::Hash: serde::de::DeserializeOwned,
+    SC: SelectChain<Block> + 'static,
+    B: sc_client_api::Backend<Block> + Send + Sync + 'static,
+    B::State: sc_client_api::backend::StateBackend<sp_runtime::traits::HashFor<Block>>,
+    S: cp_permastore::PermaStorage + 'static,
+    A: sc_rpc_api::author::AuthorApi<
+        sc_transaction_pool_api::TxHash<P>,
+        <Block as sp_runtime::traits::Block>::Hash,
+        Metadata = sc_rpc_api::Metadata,
+    >,
+{
+    use pallet_transaction_payment_rpc::{Tran
