@@ -199,4 +199,25 @@ where
 
     io.extend_with(sc_sync_state_rpc::SyncStateRpcApi::to_delegate(
         sc_sync_state_rpc::SyncStateRpcHandler::new(
-            chain_spec
+            chain_spec,
+            client,
+            shared_authority_set,
+            shared_epoch_changes,
+            deny_unsafe,
+        )?,
+    ));
+
+    io.extend_with(cc_rpc_api::permastore::PermastoreApi::to_delegate(
+        cc_rpc::permastore::Permastore::<_, _, _, Block>::new(
+            perma_storage,
+            pool,
+            author,
+            deny_unsafe,
+        ),
+    ));
+
+    Ok(io)
+}
+
+/// Instantiate all Light RPC extensions.
+pub fn create_light<C, P, M, F>(deps: LightDeps<C, F, P>) -> jso
