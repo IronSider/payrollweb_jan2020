@@ -181,4 +181,22 @@ where
         BabeRpcHandler::new(
             client.clone(),
             shared_epoch_changes.clone(),
-  
+            keystore,
+            babe_config,
+            select_chain,
+            deny_unsafe,
+        ),
+    ));
+    io.extend_with(sc_finality_grandpa_rpc::GrandpaApi::to_delegate(
+        GrandpaRpcHandler::new(
+            shared_authority_set.clone(),
+            shared_voter_state,
+            justification_stream,
+            subscription_executor,
+            finality_provider,
+        ),
+    ));
+
+    io.extend_with(sc_sync_state_rpc::SyncStateRpcApi::to_delegate(
+        sc_sync_state_rpc::SyncStateRpcHandler::new(
+            chain_spec
