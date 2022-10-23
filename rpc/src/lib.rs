@@ -163,4 +163,22 @@ where
     } = babe;
     let GrandpaDeps {
         shared_voter_state,
-        
+        shared_authority_set,
+        justification_stream,
+        subscription_executor,
+        finality_provider,
+    } = grandpa;
+
+    io.extend_with(SystemApi::to_delegate(FullSystem::new(
+        client.clone(),
+        pool.clone(),
+        deny_unsafe,
+    )));
+    io.extend_with(TransactionPaymentApi::to_delegate(TransactionPayment::new(
+        client.clone(),
+    )));
+    io.extend_with(sc_consensus_babe_rpc::BabeApi::to_delegate(
+        BabeRpcHandler::new(
+            client.clone(),
+            shared_epoch_changes.clone(),
+  
