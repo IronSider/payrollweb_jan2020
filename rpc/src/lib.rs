@@ -141,4 +141,26 @@ where
         Metadata = sc_rpc_api::Metadata,
     >,
 {
-    use pallet_transaction_payment_rpc::{Tran
+    use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
+    use substrate_frame_rpc_system::{FullSystem, SystemApi};
+
+    let mut io = jsonrpc_core::IoHandler::default();
+    let FullDeps {
+        client,
+        pool,
+        select_chain,
+        chain_spec,
+        deny_unsafe,
+        babe,
+        grandpa,
+        perma_storage,
+    } = deps;
+
+    let BabeDeps {
+        keystore,
+        babe_config,
+        shared_epoch_changes,
+    } = babe;
+    let GrandpaDeps {
+        shared_voter_state,
+        
