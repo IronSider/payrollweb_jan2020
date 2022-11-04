@@ -237,4 +237,9 @@ where
         fetcher,
     } = deps;
     let mut io = jsonrpc_core::IoHandler::default();
-    io.extend_with(SystemApi::<Hash, AccountId, Index>:
+    io.extend_with(SystemApi::<Hash, AccountId, Index>::to_delegate(
+        LightSystem::new(client, remote_blockchain, fetcher, pool),
+    ));
+
+    io
+}
