@@ -13,4 +13,17 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public
+// You should have received a copy of the GNU General Public License
+// along with Canyon. If not, see <http://www.gnu.org/licenses/>.
+
+//! Some configurable implementations as associated type for the substrate runtime.
+
+use crate::{AccountId, Authorship, Balances, Treasury};
+use frame_support::traits::{Currency, Imbalance, OnUnbalanced};
+
+type NegativeImbalance = <Balances as Currency<AccountId>>::NegativeImbalance;
+
+pub struct Author;
+impl OnUnbalanced<NegativeImbalance> for Author {
+    fn on_nonzero_unbalanced(amount: NegativeImbalance) {
+        Balances::res
