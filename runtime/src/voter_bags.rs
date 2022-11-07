@@ -20,4 +20,20 @@
 //! Generated on 2021-07-05T09:17:40.469754927+00:00
 //! for the node runtime.
 
-/// 
+/// Existential weight for this runtime.
+#[cfg(any(test, feature = "std"))]
+#[allow(unused)]
+pub const EXISTENTIAL_WEIGHT: u64 = 100_000_000_000_000;
+
+/// Constant ratio between bags for this runtime.
+#[cfg(any(test, feature = "std"))]
+#[allow(unused)]
+pub const CONSTANT_RATIO: f64 = 1.0628253590743408;
+
+/// Upper thresholds delimiting the bag list.
+pub const THRESHOLDS: [u64; 200] = [
+    100_000_000_000_000,
+    106_282_535_907_434,
+    112_959_774_389_150,
+    120_056_512_776_105,
+    127_599_106_300_477,
