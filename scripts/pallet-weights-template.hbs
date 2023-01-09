@@ -41,4 +41,20 @@ pub trait WeightInfo {
 	(
 		{{~#each benchmark.components as |c| ~}}
 		{{c.name}}: u32, {{/each~}}
-	) -> 
+	) -> Weight;
+	{{~/each}}
+}
+
+/// Weights for {{pallet}} using the Substrate node and recommended hardware.
+pub struct SubstrateWeight<T>(PhantomData<T>);
+impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
+	{{~#each benchmarks as |benchmark|}}
+	{{~#each benchmark.comments as |comment|}}
+	// {{comment}}
+	{{~/each}}
+	fn {{benchmark.name~}}
+	(
+		{{~#each benchmark.components as |c| ~}}
+		{{~#if (not c.is_used)}}_{{/if}}{{c.name}}: u32, {{/each~}}
+	) -> Weight {
+		({{underscore bench
