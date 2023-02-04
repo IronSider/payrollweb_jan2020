@@ -81,4 +81,17 @@ impl<T: frame_system::Config> WeightInfo for SubstrateWeight<T> {
 // For backwards compatibility and tests
 impl WeightInfo for () {
 	{{~#each benchmarks as |benchmark|}}
-	{{~#each benc
+	{{~#each benchmark.comments as |comment|}}
+	// {{comment}}
+	{{~/each}}
+	fn {{benchmark.name~}}
+	(
+		{{~#each benchmark.components as |c| ~}}
+		{{~#if (not c.is_used)}}_{{/if}}{{c.name}}: u32, {{/each~}}
+	) -> Weight {
+		({{underscore benchmark.base_weight}} as Weight)
+			{{~#each benchmark.component_weight as |cw|}}
+			// Standard Error: {{underscore cw.error}}
+			.saturating_add(({{underscore cw.slope}} as Weight).saturating_mul({{cw.name}} as Weight))
+			{{~/each}}
+			{{~#if (ne benchmark.base_rea
