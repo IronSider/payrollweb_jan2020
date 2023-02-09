@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")"
+
+cd ..
+
+cargo build --release --features=runtime-benchmarks
+
+bin=./target/release/canyon
+
+pallets=(
+  permastore
+  poa
+)
+
+for pallet in "${pallets[@]}"; do
+  output="./pallets/$pallet/src/weights.rs"
+
+  "$bin" benchmark \
+    --chain "dev" \
+    --execution=wasm \
+    --wasm-execution=compiled \
+    --pallet "pallet_$pallet" \
+    --extrinsic 
