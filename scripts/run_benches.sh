@@ -23,4 +23,14 @@ for pallet in "${pallets[@]}"; do
     --execution=wasm \
     --wasm-execution=compiled \
     --pallet "pallet_$pallet" \
-    --extrinsic 
+    --extrinsic "*" \
+    --steps=50 \
+    --heap-pages=4096 \
+    --repeat 20 \
+    --template=./scripts/pallet-weights-template.hbs \
+    --output="$output"
+
+  if [ -f "$output" ]; then
+    rustfmt "$output"
+  fi
+done
